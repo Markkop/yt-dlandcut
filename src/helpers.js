@@ -4,10 +4,12 @@ import settings from './defaultSettings'
 
 /**
  * @typedef UserOptions
- * @property { Boolean } openAtFinish
  * @property { String } youtubeUrl
  * @property { String } startTime HH:MM:SS
  * @property { String } endTime HH:MM:SS
+ * @property { String } customFileName
+ * @property { Boolean } toMp3
+ * @property { Boolean } openAtFinish
  */
 
 /**
@@ -66,6 +68,11 @@ export function askOptions() {
         message: 'Please provide the endTime in the format HH:MM:SS',
         default: endTime,
         validate: validateTime,
+      },
+      {
+        type: 'input',
+        name: 'customFileName',
+        message: 'Give the file a custom name or leave empty',
       },
       {
         type: 'confirm',

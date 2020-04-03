@@ -8,12 +8,13 @@ import { cutVideo, convertToMp3 } from './convert'
 ;(async function main() {
   try {
     const answers = await askOptions()
-    const { youtubeUrl, startTime, endTime, openAtFinish, toMp3 } = answers
+    const { youtubeUrl, startTime, endTime, customFileName, openAtFinish, toMp3 } = answers
 
-    const videoTitle = await getVideoTitle(youtubeUrl)
-    const fileName = formatFileName(videoTitle)
+    const title = await getVideoTitle(youtubeUrl)
+    const formattedTitle = formatFileName(title)
+    const fileName = formatFileName(customFileName) || formattedTitle
 
-    const downloadPath = `resources/downloads/${fileName}.mp4`
+    const downloadPath = `resources/downloads/${formattedTitle}.mp4`
     const convertPath = `resources/cuts/${fileName}.mp4`
     const audioPath = `resources/audios/${fileName}.mp3`
 
