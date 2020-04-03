@@ -1,0 +1,23 @@
+{
+  "name": "yt-dlandcut",
+  "version": "1.0.0",
+  "description": "Download and Cut an Youtube video by it's starting and ending times",
+  "main": "index.js",
+  "scripts": {
+    "start": "babel-node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Marcelo 'Mark' Kopmann",
+  "license": "ISC",
+  "dependencies": {
+    "fluent-ffmpeg": "^2.1.2",
+    "inquirer": "^7.1.0",
+    "youtube-dl": "^3.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.0"
+  }
+}
