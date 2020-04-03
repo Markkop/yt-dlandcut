@@ -20,12 +20,6 @@ export function askOptions() {
 
     const questions = [
       {
-        type: 'confirm',
-        name: 'openAtFinish',
-        message: 'Open file after finishing?',
-        default: false,
-      },
-      {
         type: 'input',
         name: 'youtubeUrl',
         message: 'Please input the youtube video you wish to download and cut:',
@@ -65,11 +59,21 @@ export function askOptions() {
           return 'Wrong format'
         },
       },
+      {
+        type: 'confirm',
+        name: 'toMp3',
+        message: 'Do you wish to convert this fragment to mp3?',
+        default: false,
+      },
+      {
+        type: 'confirm',
+        name: 'openAtFinish',
+        message: 'Open file after finishing?',
+        default: false,
+      },
     ]
 
-    inquirer.prompt(questions).then((answers) => {
-      resolve(answers)
-    })
+    inquirer.prompt(questions).then((answers) => resolve(answers))
   })
 }
 
@@ -92,9 +96,7 @@ export function getDuration(startTime, endTime) {
  * @returns { String } fileName
  */
 export function formatFileName(title) {
-  const extension = '.mp4'
-  const fileName = title.replace(/\W/g, '_')
-  return `${fileName}${extension}`
+  return title.replace(/\W/g, '_')
 }
 
 /**
@@ -102,7 +104,7 @@ export function formatFileName(title) {
  * @param { String } path
  */
 export function openFile(path) {
-  console.log('> Opening video with VLC Player')
+  console.log('> Opening file with VLC Player')
   const command = `vlc ${path}`
   console.log(`>> ${command}`)
   exec(command)
