@@ -10,7 +10,7 @@ The time must be in the format `HH:MM:SS` and the duration can't be longer than 
 
 ## How to use
 
-- Install NodeJS if you haven't already
+- Install NodeJS and ffmpeg
 - Clone or download this repository
 - Run `npm start` inside the project's folder
 - Provide required information
