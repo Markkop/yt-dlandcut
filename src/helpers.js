@@ -11,6 +11,33 @@ import settings from './defaultSettings'
  */
 
 /**
+ * Validate if time is in expected format
+ * @param { String } value
+ * @returns { true|String } success or error message
+ */
+function validateTime(value) {
+  const expectedFormat = /\d{2}:\d{2}:\d{2}/
+  if (expectedFormat.test(value)) {
+    return true
+  }
+  return 'Wrong format'
+}
+
+/**
+ * Validate if url is in expected format
+ * @param { String } value
+ * @returns { true|String } success or error message
+ */
+function validateYoutubeUrl(value) {
+  const isYouTubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//
+  if (isYouTubeRegex.test(value)) {
+    return true
+  }
+
+  return 'Please enter a youtube url'
+}
+
+/**
  * Request user input
  * @returns { UserOptions }
  */
@@ -24,40 +51,21 @@ export function askOptions() {
         name: 'youtubeUrl',
         message: 'Please input the youtube video you wish to download and cut:',
         default: url,
-        validate: function (value) {
-          const isYouTubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//
-          if (isYouTubeRegex.test(value)) {
-            return true
-          }
-
-          return 'Please enter a youtube url'
-        },
+        validate: validateYoutubeUrl,
       },
       {
         type: 'input',
         name: 'startTime',
         message: 'Please provide the startTime in the format HH:MM:SS',
         default: startTime,
-        validate: function (value) {
-          const expectedFormat = /\d{2}:\d{2}:\d{2}/
-          if (expectedFormat.test(value)) {
-            return true
-          }
-          return 'Wrong format'
-        },
+        validate: validateTime,
       },
       {
         type: 'input',
         name: 'endTime',
         message: 'Please provide the endTime in the format HH:MM:SS',
         default: endTime,
-        validate: function (value) {
-          const expectedFormat = /\d{2}:\d{2}:\d{2}/
-          if (expectedFormat.test(value)) {
-            return true
-          }
-          return 'Wrong format'
-        },
+        validate: validateTime,
       },
       {
         type: 'confirm',
