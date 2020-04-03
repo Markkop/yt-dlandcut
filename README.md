@@ -5,7 +5,7 @@
 
 ## What it is
 
-This tool downloads a Youtube video to `videos` folder and cuts it given a starting and an ending time.
+This tool downloads a Youtube video to `videos` folder and cuts it given a starting and an ending time.\
 The time must be in the format `HH:MM:SS` and the duration can't be longer than 24 hours.
 
 ## How to use
@@ -13,5 +13,5 @@ The time must be in the format `HH:MM:SS` and the duration can't be longer than 
 - Install NodeJS if you haven't already
 - Clone or download this repository
 - Run `npm start` inside the project's folder
-- Provide required the information
+- Provide required information
 - Check `videos` folder

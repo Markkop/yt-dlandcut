@@ -1,7 +1,7 @@
 {
   "name": "yt-dlandcut",
   "version": "1.0.0",
-  "description": "Download and Cut an Youtube video by it's starting and ending times",
+  "description": "Download and Cut an Youtube video by its starting and ending times",
   "main": "index.js",
   "scripts": {
     "start": "babel-node src/index.js",
