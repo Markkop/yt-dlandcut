@@ -15,3 +15,7 @@ The time must be in the format `HH:MM:SS` and the duration can't be longer than 
 - Run `npm start` inside the project's folder
 - Provide required information
 - Check `videos` folder
+
+## User Options
+
+![An example of user options](http://i.imgur.com/avvmjF8.png)

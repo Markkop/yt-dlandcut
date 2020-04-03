@@ -1,11 +1,12 @@
 {
   "name": "yt-dlandcut",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Download and Cut an Youtube video by its starting and ending times",
   "main": "index.js",
   "scripts": {
     "start": "babel-node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf resources/*/*"
   },
   "keywords": [],
   "author": "Marcelo 'Mark' Kopmann",
