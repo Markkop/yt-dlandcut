@@ -1,4 +1,5 @@
 import inquirer from 'inquirer'
+import fs from 'fs'
 import { exec } from 'child_process'
 import settings from './defaultSettings'
 
@@ -123,4 +124,20 @@ export function openFile(path) {
   const command = `vlc ${path}`
   console.log(`>> ${command}`)
   exec(command)
+}
+
+/**
+ * Removes a filename from a given path
+ * and then check if this path exists.
+ * If not, then creates it.
+ * TO DO: remove filename from path at index.js
+ * @param { String } path
+ */
+export function checkAndCreateFolder(path) {
+  const pathWithFile = path.split('/')
+  pathWithFile.pop()
+  const pathWithoutFile = pathWithFile.join('/')
+  if (!fs.existsSync(pathWithoutFile)) {
+    fs.mkdirSync(pathWithoutFile, { recursive: true })
+  }
 }

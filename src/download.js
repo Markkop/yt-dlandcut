@@ -1,5 +1,6 @@
 import fs from 'fs'
 import youtubedl from 'youtube-dl'
+import { checkAndCreateFolder } from './helpers'
 
 /**
  * Get Youtube's video title
@@ -28,6 +29,8 @@ export function getVideoTitle(url = '') {
 export function downloadFromYoutube(youtubeUrl, downloadPath) {
   return new Promise((resolve, reject) => {
     try {
+      checkAndCreateFolder(downloadPath)
+
       const video = youtubedl(youtubeUrl, ['--format=18'], { cwd: __dirname })
 
       video.on('info', function (info) {

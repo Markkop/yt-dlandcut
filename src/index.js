@@ -14,9 +14,9 @@ import { cutVideo, convertToMp3 } from './convert'
     const formattedTitle = formatFileName(title)
     const fileName = formatFileName(customFileName) || formattedTitle
 
-    const downloadPath = `resources/downloads/${formattedTitle}.mp4`
-    const convertPath = `resources/cuts/${fileName}.mp4`
-    const audioPath = `resources/audios/${fileName}.mp3`
+    const downloadPath = `./resources/downloads/${formattedTitle}.mp4`
+    const convertPath = `./resources/cuts/${fileName}.mp4`
+    const audioPath = `./resources/audios/${fileName}.mp3`
 
     const hasDownloaded = await downloadFromYoutube(youtubeUrl, downloadPath)
     if (!hasDownloaded) {

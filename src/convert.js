@@ -1,5 +1,5 @@
 import ffmpeg from 'fluent-ffmpeg'
-
+import { checkAndCreateFolder } from './helpers'
 /**
  * Cut videos by it's start time and duration in seconds
  * @param { String } inputPath file path
@@ -10,6 +10,8 @@ import ffmpeg from 'fluent-ffmpeg'
  */
 export function cutVideo(inputPath, outputPath, startTime, duration) {
   return new Promise((resolve, reject) => {
+    checkAndCreateFolder(outputPath)
+
     const conv = new ffmpeg({ source: inputPath })
     conv
       .setStartTime(startTime)
@@ -39,6 +41,7 @@ export function cutVideo(inputPath, outputPath, startTime, duration) {
  */
 export function convertToMp3(inputPath, outputPath) {
   return new Promise((resolve, reject) => {
+    checkAndCreateFolder(outputPath)
     const conv = new ffmpeg({ source: inputPath })
     conv
       .toFormat('mp3')
