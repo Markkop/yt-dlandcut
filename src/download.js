@@ -8,7 +8,7 @@ import { checkAndCreateFolder, updateStatus } from './helpers'
  * Change youtube-dl binary to its exe version.
  * TO DO: Refactor this to merge it with the similar function at convert.js
  */
-export function useWindowsBinary() {
+export function useWindowsBinaryYoutubeDl() {
   if (process.platform === 'win32') {
     const customBinaryPath = path.resolve(remote.app.getAppPath(), 'bin/youtube-dl.exe')
     youtubedl.setYtdlBinary(customBinaryPath)
@@ -29,6 +29,7 @@ export function getVideoTitle(url = '') {
         reject(err)
       }
       const { title } = info
+
       resolve(title)
     }
     youtubedl.getInfo(url, callback)
@@ -41,7 +42,7 @@ export function getVideoTitle(url = '') {
  * @param { String } downloadPath such as './videos/downloaded.mp4'
  * @returns { Promise<Boolean>} download sucess
  */
-export function downloadFromYoutube(youtubeUrl, downloadPath) {
+export function downloadFromYoutube(youtubeUrl, downloadPath, overwriteFile) {
   return new Promise((resolve, reject) => {
     try {
       checkAndCreateFolder(downloadPath)

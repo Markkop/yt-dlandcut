@@ -35,11 +35,11 @@ export function cutVideo(inputPath, outputPath, startTime, duration) {
       .setDuration(duration)
       .setFfmpegPath(ffmpegPath)
       .on('start', function (commandLine) {
-        const message = `Starting ffmpeg with command: ${commandLine}`
+        const message = `Starting ffmpeg with command:\n${commandLine}`
         updateStatus(message)
       })
       .on('error', function (err) {
-        console.log('>> Error while converting: ', err)
+        updateStatus(`>> Error while converting: ${err}`)
         reject(err)
       })
       .on('end', function (err) {
@@ -67,11 +67,11 @@ export function convertToMp3(inputPath, outputPath) {
       .toFormat('mp3')
       .setFfmpegPath(ffmpegPath)
       .on('start', function (commandLine) {
-        const message = `Starting ffmpeg with command: ${commandLine}`
+        const message = `Starting ffmpeg with command:\n${commandLine}`
         updateStatus(message)
       })
       .on('error', function (err) {
-        console.log('>> Error while converting: ', err)
+        updateStatus(`>> Error while converting: ${err}`)
         reject(false)
       })
       .on('end', function (err) {

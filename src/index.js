@@ -1,49 +1,50 @@
-import { remote } from 'electron'
-import { getDuration, formatFileName, openFile } from './helpers'
-import { downloadFromYoutube, getVideoTitle, useWindowsBinary } from './download'
+import path from 'path'
+import { getDuration, openItem, slugify, updateStatus } from './helpers'
+import { downloadFromYoutube, getVideoTitle, useWindowsBinaryYoutubeDl } from './download'
 import { cutVideo, convertToMp3, useWindowsBinaryFfmpeg } from './convert'
+import { outputPath } from './settings'
 
 /**
  * Runs this package
  */
-export async function main(youtubeUrl, startTime, endTime, options) {
+export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
   try {
     if (!youtubeUrl || !startTime || !endTime) {
       throw new Error('Missing obrigatory argument')
     }
+    updateStatus('Starting...')
 
     // TO DO: refactor windows binaries usage
-    useWindowsBinary()
+    useWindowsBinaryYoutubeDl()
     useWindowsBinaryFfmpeg()
 
-    const { customFileName, openAtFinish, toMp3 } = options
+    const { customFileName, openAtFinish, toMp3, overwriteDownload } = options
 
     const title = await getVideoTitle(youtubeUrl)
-    const formattedTitle = formatFileName(title)
-    const fileName = customFileName ? formatFileName(customFileName) : formattedTitle
+    const downloadFileName = slugify(title)
+    const cutFileName = slugify(customFileName || `${downloadFileName}-${startTime}-${endTime}`)
 
-    // TO DO: use path from 'path' instead of string literals
-    const homePath = remote.app.getPath('home')
-    const basePath = `${homePath}/output`
-    const downloadPath = `${basePath}/downloads/${formattedTitle}.mp4`
-    const convertPath = `${basePath}/cuts/${fileName}.mp4`
-    const audioPath = `${basePath}/audios/${fileName}.mp3`
+    const videoPath = path.join(outputPath, downloadFileName)
+    const downloadFilePath = path.join(videoPath, `${downloadFileName}.mp4`)
+    const cutFilePath = path.join(videoPath, `${cutFileName}.mp4`)
+    const audioFilePath = path.join(videoPath, `${cutFileName}.mp3`)
 
     await downloadFromYoutube(youtubeUrl, downloadFilePath, overwriteDownload)
 
     const duration = getDuration(startTime, endTime)
-    await cutVideo(downloadPath, convertPath, startTime, duration)
+    await cutVideo(downloadFilePath, cutFilePath, startTime, duration)
 
-    let hasConvertedToMp3 = false
     if (toMp3) {
-      await convertToMp3(convertPath, audioPath)
+      await convertToMp3(cutFilePath, audioFilePath)
     }
 
     // TO DO: test this on windows
     if (openAtFinish) {
-      const path = hasConvertedToMp3 ? audioPath : convertPath
-      openFile(path)
+      const path = toMp3 ? audioFilePath : cutFilePath
+      openItem(path)
     }
+
+    updateStatus('Finished! Check your files in your home folder.')
   } catch (error) {
     // TO DO: better error handling on all files
     console.error(error)

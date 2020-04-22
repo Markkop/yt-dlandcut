@@ -10,7 +10,7 @@
     "dist:linux": "electron-builder build --linux AppImage ",
     "dist:win": "electron-builder build --win portable ",
     "dist": "electron-builder build --win portable --linux AppImage ",
-    "build": "babel src --out-dir build && cp src/electron/index.html build/electron/index.html"
+    "build": "babel src --out-dir build"
   },
   "keywords": [],
   "author": "Marcelo 'Mark' Kopmann",
@@ -19,7 +19,6 @@
     "@babel/cli": "^7.8.4",
     "@babel/plugin-transform-runtime": "^7.9.0",
     "@babel/runtime": "^7.9.2",
-    "electron-reload": "^1.5.0",
     "ffmpeg-static": "^4.1.1",
     "fluent-ffmpeg": "^2.1.2",
     "youtube-dl": "^3.0.2"
@@ -37,6 +36,7 @@
     "files": [
       "build/**/*",
       "bin/*",
+      "public/*",
       "node_modules/youtube-dl/bin/youtube-dl",
       "package.json"
     ]
