@@ -29,9 +29,7 @@ export async function main(youtubeUrl, startTime, endTime, options) {
     const convertPath = `${basePath}/cuts/${fileName}.mp4`
     const audioPath = `${basePath}/audios/${fileName}.mp3`
 
-    // TO DO: skip if it has already been downloaded
-    // and offers to force download
-    await downloadFromYoutube(youtubeUrl, downloadPath)
+    await downloadFromYoutube(youtubeUrl, downloadFilePath, overwriteDownload)
 
     const duration = getDuration(startTime, endTime)
     await cutVideo(downloadPath, convertPath, startTime, duration)

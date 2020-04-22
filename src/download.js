@@ -45,8 +45,14 @@ export function downloadFromYoutube(youtubeUrl, downloadPath) {
   return new Promise((resolve, reject) => {
     try {
       checkAndCreateFolder(downloadPath)
-      const video = youtubedl(youtubeUrl, ['--format=18'], { cwd: __dirname })
 
+      if (fs.existsSync(downloadPath) && !overwriteFile) {
+        const message = `Skipping download: file exists and overwrite option was not checked`
+        updateStatus(message)
+        return resolve(true)
+      }
+
+      const video = youtubedl(youtubeUrl, ['--format=18'], { cwd: __dirname })
       video.on('info', function (info) {
         const message = `Starting download from ${youtubeUrl} named ${info._filename} with size ${info.size}KB`
         updateStatus(message)
