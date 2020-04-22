@@ -1,14 +1,16 @@
 {
   "name": "yt-dlandcut",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Download and Cut an Youtube video by its starting and ending times",
-  "main": "./build/index.js",
+  "main": "build/electron/main.js",
   "scripts": {
     "electron": "electron .",
     "start": "babel-node src/index.js",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder build --win portable --linux AppImage",
-    "build": "babel src --out-dir build"
+    "dist:linux": "electron-builder build --linux AppImage ",
+    "dist:win": "electron-builder build --win portable ",
+    "dist": "electron-builder build --win portable --linux AppImage ",
+    "build": "babel src --out-dir build && cp src/electron/index.html build/electron/index.html"
   },
   "keywords": [],
   "author": "Marcelo 'Mark' Kopmann",
@@ -17,8 +19,9 @@
     "@babel/cli": "^7.8.4",
     "@babel/plugin-transform-runtime": "^7.9.0",
     "@babel/runtime": "^7.9.2",
+    "electron-reload": "^1.5.0",
+    "ffmpeg-static": "^4.1.1",
     "fluent-ffmpeg": "^2.1.2",
-    "inquirer": "^7.1.0",
     "youtube-dl": "^3.0.2"
   },
   "devDependencies": {
@@ -33,6 +36,7 @@
     "asar": false,
     "files": [
       "build/**/*",
+      "bin/*",
       "node_modules/youtube-dl/bin/youtube-dl",
       "package.json"
     ]

@@ -1,5 +1,22 @@
+import { remote } from 'electron'
+import path from 'path'
 import ffmpeg from 'fluent-ffmpeg'
-import { checkAndCreateFolder } from './helpers'
+import { checkAndCreateFolder, updateStatus } from './helpers'
+import pathToFfmpeg from 'ffmpeg-static'
+let ffmpegPath = pathToFfmpeg
+
+/**
+ * Change ffmpeg binary to its exe version.
+ * TO DO: refactor this
+ */
+export function useWindowsBinaryFfmpeg() {
+  if (process.platform === 'win32') {
+    ffmpegPath = path.resolve(remote.app.getAppPath(), 'bin/ffmpeg.exe')
+    const message = `Windows detected: using ffmpeg.exe at ${ffmpegPath}`
+    updateStatus(message)
+  }
+}
+
 /**
  * Cut videos by it's start time and duration in seconds
  * @param { String } inputPath file path
@@ -16,16 +33,19 @@ export function cutVideo(inputPath, outputPath, startTime, duration) {
     conv
       .setStartTime(startTime)
       .setDuration(duration)
+      .setFfmpegPath(ffmpegPath)
       .on('start', function (commandLine) {
-        console.log('> Starting ffmpeg with command: \n>>', commandLine)
+        const message = `Starting ffmpeg with command: ${commandLine}`
+        updateStatus(message)
       })
       .on('error', function (err) {
-        console.log('>> Error while converting: ', +err)
-        reject(false)
+        console.log('>> Error while converting: ', err)
+        reject(err)
       })
       .on('end', function (err) {
         if (!err) {
-          console.log('>> Video converted with success')
+          const message = `Video ${inputPath} has been cut with success to ${outputPath}`
+          updateStatus(message)
           resolve(true)
         }
       })
@@ -45,16 +65,19 @@ export function convertToMp3(inputPath, outputPath) {
     const conv = new ffmpeg({ source: inputPath })
     conv
       .toFormat('mp3')
+      .setFfmpegPath(ffmpegPath)
       .on('start', function (commandLine) {
-        console.log('> Starting ffmpeg with command: \n>>', commandLine)
+        const message = `Starting ffmpeg with command: ${commandLine}`
+        updateStatus(message)
       })
       .on('error', function (err) {
-        console.log('>> Error while converting: ', +err)
+        console.log('>> Error while converting: ', err)
         reject(false)
       })
       .on('end', function (err) {
         if (!err) {
-          console.log('>> Video converted with success')
+          const message = `Video ${inputPath} converted with success to ${outputPath}`
+          updateStatus(message)
           resolve(true)
         }
       })
