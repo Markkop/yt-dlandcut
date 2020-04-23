@@ -9,6 +9,7 @@ jobs:
       dist: trusty
       services: docker
       language: generic
+      node_js: '10'
 
     - os: windows
       language: node_js
