@@ -1,6 +1,6 @@
 {
   "name": "yt-dlandcut",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Download and Cut an Youtube video by its starting and ending times",
   "repository": "github:markkop/yt-dlandcut",
   "main": "build/electron/main.js",
