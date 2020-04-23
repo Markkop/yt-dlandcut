@@ -27,8 +27,6 @@ cache:
     - $HOME/.cache/electron-builder
 
 script:
-  - yarn
-  - yarn build
   - |
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
       docker run --rm \
