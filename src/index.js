@@ -33,15 +33,14 @@ export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
     )
 
     const duration = getDuration(startTime, endTime)
-    const convertedFile = await cutVideo(downlodedFile, outputPath, cutFileName, startTime, duration)
+    let convertedFile = await cutVideo(downlodedFile, outputPath, cutFileName, startTime, duration)
 
     if (toMp3) {
-      await convertToMp3(convertedFile, outputPath, cutFileName)
+      convertedFile = await convertToMp3(convertedFile, outputPath, cutFileName)
     }
 
     if (openAtFinish) {
-      const path = toMp3 ? audioFilePath : cutFilePath
-      openItem(path)
+      openItem(convertedFile)
     }
 
     updateStatus('Finished! Check your files in your home folder.')

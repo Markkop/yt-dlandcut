@@ -11,6 +11,9 @@ window.addEventListener('DOMContentLoaded', () => {
   attachLinks()
 })
 
+/**
+ * Enabled and disable submit button
+ */
 function toggleButton() {
   const button = document.querySelector('input[type=submit]')
   button.disabled = !button.disabled
@@ -19,6 +22,10 @@ function toggleButton() {
   button.value = buttonText
 }
 
+/**
+ * Add a listener to form that
+ * handles submissions
+ */
 function listenAndHandleForm() {
   const form = document.querySelector('form')
   form.addEventListener('submit', (event) => {
@@ -41,6 +48,12 @@ function listenAndHandleForm() {
   })
 }
 
+/**
+ * Converts formData entries to options object
+ * @param { Object } options
+ * @param { Array } entry
+ * @returns { Object } options
+ */
 function reduceOptionsToObject(options, entry) {
   const [key, value] = entry
 
@@ -63,6 +76,10 @@ function reduceOptionsToObject(options, entry) {
   return options
 }
 
+/**
+ * Add an event listener to folder button
+ * that open output folder
+ */
 function listenFolderButton() {
   const button = document.querySelector('.open-folder-button')
   if (!button) {
@@ -71,6 +88,9 @@ function listenFolderButton() {
   button.addEventListener('click', () => openItem(basePath))
 }
 
+/**
+ * Clears status/log messages
+ */
 function clearStatus() {
   const status = document.querySelector('#status')
   if (!status) {
@@ -79,21 +99,30 @@ function clearStatus() {
   status.innerText = ''
 }
 
-const mapLinks = {
-  '.github-icon': 'https://github.com/Markkop/yt-dlandcut',
-  '.myblog': 'https://markkop.dev',
-  '.dayu-twitter': 'https://twitter.com/dayuwastaken',
-  '.github-personal': 'https://github.com/Markkop',
-  '.twitter-personal': 'https://twitter.com/HeyMarkKop',
-  '.linkedin-personal': 'https://www.linkedin.com/in/marcelo-kopmann/',
-}
-
+/**
+ * Call attach link function for every class name in
+ * mapLinks object
+ */
 function attachLinks() {
+  const mapLinks = {
+    '.github-icon': 'https://github.com/Markkop/yt-dlandcut',
+    '.myblog': 'https://markkop.dev',
+    '.dayu-twitter': 'https://twitter.com/dayuwastaken',
+    '.github-personal': 'https://github.com/Markkop',
+    '.twitter-personal': 'https://twitter.com/HeyMarkKop',
+    '.linkedin-personal': 'https://www.linkedin.com/in/marcelo-kopmann/',
+  }
+
   for (let className in mapLinks) {
     attachLinkToClassElement(className, mapLinks[className])
   }
 }
 
+/**
+ * Attach a url opener to elements using class name
+ * @param { String } className
+ * @param { String } url
+ */
 function attachLinkToClassElement(className, url) {
   const element = document.querySelector(className)
   if (!element) {
