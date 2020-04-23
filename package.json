@@ -12,7 +12,7 @@
     "dist:win": "electron-builder build --win portable ",
     "dist": "electron-builder build --win portable --linux AppImage ",
     "build": "babel src --out-dir build",
-    "release": "build"
+    "release": "yarn build && electron-builder"
   },
   "keywords": [],
   "author": "Marcelo 'Mark' Kopmann",
