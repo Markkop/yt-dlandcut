@@ -8,7 +8,8 @@ jobs:
     - os: linux
       dist: trusty
       services: docker
-      language: generic
+      language: node_js
+      node_js: '10'
 
     - os: windows
       language: node_js
@@ -31,13 +32,14 @@ script:
   - |
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
       docker run --rm \
+        -e GH_TOKEN=$GH_TOKEN \
         -v ${PWD}:/project \
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn dist:linux"
+        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release:linux"
     else
-      yarn dist:win
+      yarn release:win
     fi
 
 deploy:
@@ -48,5 +50,6 @@ deploy:
     - 'dist/*.AppImage'
     - 'dist/*.exe'
   overwrite: true
+  skip_cleanup: true
   on:
-    all_branches: true
+    branch: 'fix/release'
