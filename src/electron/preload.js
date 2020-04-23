@@ -1,6 +1,6 @@
 const { downloadAndCut } = require('../../build')
 const { openItem } = require('../../build/helpers')
-const { outputPath } = require('../../build/settings')
+const { basePath } = require('../../build/settings')
 const { shell } = require('electron')
 
 // All of the Node.js APIs are available in the preload process.
@@ -68,7 +68,7 @@ function listenFolderButton() {
   if (!button) {
     return
   }
-  button.addEventListener('click', () => openItem(outputPath))
+  button.addEventListener('click', () => openItem(basePath))
 }
 
 function clearStatus() {

@@ -39,18 +39,20 @@ export function getVideoTitle(url = '') {
 /**
  * Download youtube video
  * @param { String } youtubeUrl youtube video url
- * @param { String } downloadPath such as './videos/downloaded.mp4'
- * @returns { Promise<Boolean>} download sucess
+ * @param { String } downloadPath folder path
+ * @param { String } fileName file name without extension
+ * @returns { Promise<String|Boolean>} downloaded file path or false if fail
  */
-export function downloadFromYoutube(youtubeUrl, downloadPath, overwriteFile) {
+export function downloadFromYoutube(youtubeUrl, downloadPath, fileName, overwriteFile) {
   return new Promise((resolve, reject) => {
     try {
       checkAndCreateFolder(downloadPath)
+      const filePath = path.join(downloadPath, `${fileName}.mp4`)
 
-      if (fs.existsSync(downloadPath) && !overwriteFile) {
+      if (fs.existsSync(filePath) && !overwriteFile) {
         const message = `Skipping download: file exists and overwrite option was not checked`
         updateStatus(message)
-        return resolve(true)
+        return resolve(filePath)
       }
 
       const video = youtubedl(youtubeUrl, ['--format=18'], { cwd: __dirname })
@@ -59,15 +61,15 @@ export function downloadFromYoutube(youtubeUrl, downloadPath, overwriteFile) {
         updateStatus(message)
       })
 
-      video.pipe(fs.createWriteStream(downloadPath))
+      video.pipe(fs.createWriteStream(filePath))
 
       video.on('end', function () {
-        const message = `Video from ${youtubeUrl} has been downloaded to ${downloadPath}`
+        const message = `Video from ${youtubeUrl} has been downloaded to ${filePath}`
         updateStatus(message)
-        resolve(true)
+        resolve(filePath)
       })
     } catch (error) {
-      console.log('Download failed', error)
+      updateStatus(`Download failed: ${error}`)
       reject(false)
     }
   })

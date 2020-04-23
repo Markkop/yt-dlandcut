@@ -19,15 +19,17 @@ export function useWindowsBinaryFfmpeg() {
 
 /**
  * Cut videos by it's start time and duration in seconds
- * @param { String } inputPath file path
- * @param { String } onputPath file path
+ * @param { String } inputPath folder path
+ * @param { String } onputPath folder path
+ * @param { String } fileName file name without extension
  * @param { String } startTime in format 00:00:00
  * @param { String } duration in seconds
- * @returns { Promise<Boolen> } has converted with success
+ * @returns { Promise<String|Boolean> } converted file path or false if fail
  */
-export function cutVideo(inputPath, outputPath, startTime, duration) {
+export function cutVideo(inputPath, outputPath, fileName, startTime, duration) {
   return new Promise((resolve, reject) => {
     checkAndCreateFolder(outputPath)
+    const outputFilePath = path.join(outputPath, `${fileName}.mp4`)
 
     const conv = new ffmpeg({ source: inputPath })
     conv
@@ -44,24 +46,27 @@ export function cutVideo(inputPath, outputPath, startTime, duration) {
       })
       .on('end', function (err) {
         if (!err) {
-          const message = `Video ${inputPath} has been cut with success to ${outputPath}`
+          const message = `Video ${inputPath} has been cut with success to ${outputFilePath}`
           updateStatus(message)
-          resolve(true)
+          resolve(outputFilePath)
         }
       })
-      .saveToFile(outputPath)
+      .saveToFile(outputFilePath)
   })
 }
 
 /**
  * Convert a video to mp3
- * @param { String } inputPath file path
- * @param { String } onputPath file path
- * * @returns { Promise<Boolen> } has converted with success
+ * @param { String } inputPath folder path
+ * @param { String } onputPath folder path
+ * @param { String } fileName file name without extension
+ * @returns { Promise<String|Boolean> } converted file path or false if fail
  */
-export function convertToMp3(inputPath, outputPath) {
+export function convertToMp3(inputPath, outputPath, fileName) {
   return new Promise((resolve, reject) => {
     checkAndCreateFolder(outputPath)
+    const outputFilePath = path.join(outputPath, `${fileName}.mp3`)
+
     const conv = new ffmpeg({ source: inputPath })
     conv
       .toFormat('mp3')
@@ -76,11 +81,11 @@ export function convertToMp3(inputPath, outputPath) {
       })
       .on('end', function (err) {
         if (!err) {
-          const message = `Video ${inputPath} converted with success to ${outputPath}`
+          const message = `Video ${inputPath} converted with success to ${outputFilePath}`
           updateStatus(message)
-          resolve(true)
+          resolve(outputFilePath)
         }
       })
-      .saveToFile(outputPath)
+      .saveToFile(outputFilePath)
   })
 }

@@ -25,17 +25,14 @@ export function openItem(path) {
 }
 
 /**
- * Removes a filename from a given path
- * and then check if this path exists.
- * If not, then creates it.
+ * Check if path exists and if doesn't,
+ * then creates it.
  * @param { String } path
  */
 export function checkAndCreateFolder(path) {
-  const pathWithFile = path.split('/')
-  pathWithFile.pop()
-  const pathWithoutFile = pathWithFile.join('/')
-  if (!fs.existsSync(pathWithoutFile)) {
-    fs.mkdirSync(pathWithoutFile, { recursive: true })
+  if (!fs.existsSync(path)) {
+    updateStatus(`Path ${path} not found, creating one`)
+    fs.mkdirSync(path, { recursive: true })
   }
 }
 

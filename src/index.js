@@ -2,7 +2,7 @@ import path from 'path'
 import { getDuration, openItem, slugify, updateStatus } from './helpers'
 import { downloadFromYoutube, getVideoTitle, useWindowsBinaryYoutubeDl } from './download'
 import { cutVideo, convertToMp3, useWindowsBinaryFfmpeg } from './convert'
-import { outputPath } from './settings'
+import { basePath } from './settings'
 
 /**
  * Runs this package
@@ -24,21 +24,21 @@ export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
     const downloadFileName = slugify(title)
     const cutFileName = slugify(customFileName || `${downloadFileName}-${startTime}-${endTime}`)
 
-    const videoPath = path.join(outputPath, downloadFileName)
-    const downloadFilePath = path.join(videoPath, `${downloadFileName}.mp4`)
-    const cutFilePath = path.join(videoPath, `${cutFileName}.mp4`)
-    const audioFilePath = path.join(videoPath, `${cutFileName}.mp3`)
-
-    await downloadFromYoutube(youtubeUrl, downloadFilePath, overwriteDownload)
+    const outputPath = path.join(basePath, downloadFileName)
+    const downlodedFile = await downloadFromYoutube(
+      youtubeUrl,
+      outputPath,
+      downloadFileName,
+      overwriteDownload
+    )
 
     const duration = getDuration(startTime, endTime)
-    await cutVideo(downloadFilePath, cutFilePath, startTime, duration)
+    const convertedFile = await cutVideo(downlodedFile, outputPath, cutFileName, startTime, duration)
 
     if (toMp3) {
-      await convertToMp3(cutFilePath, audioFilePath)
+      await convertToMp3(convertedFile, outputPath, cutFileName)
     }
 
-    // TO DO: test this on windows
     if (openAtFinish) {
       const path = toMp3 ? audioFilePath : cutFilePath
       openItem(path)
