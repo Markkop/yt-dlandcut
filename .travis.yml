@@ -1,5 +1,7 @@
+sudo: false
+
 language: node_js
-node_js: '10.18.0'
+node_js: "9.11.1"
 
 cache:
   directories:
@@ -15,6 +17,14 @@ env:
 
 jobs:
   include:
+    - stage: Deploy Windows & Mac
+      if: tag IS present
+      os: osx
+      osx_image: xcode10.1
+      script:
+        - npm run release -- --mac --win
+      before_cache:
+        - rm -rf $HOME/.cache/electron-builder/wine
     - stage: Deploy linux
       if: tag IS present
       os: linux
