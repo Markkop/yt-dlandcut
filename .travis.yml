@@ -8,16 +8,15 @@ jobs:
     - os: linux
       dist: trusty
       services: docker
-      language: node_js
-      node_js: '10'
+      language: generic
 
-    - os: windows
-      language: node_js
-      node_js: '10'
-      env:
-        - YARN_GPG=no
-        - ELECTRON_CACHE=$HOME/.cache/electron
-        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+    # - os: windows
+    #   language: node_js
+    #   node_js: '10'
+    #   env:
+    #     - YARN_GPG=no
+    #     - ELECTRON_CACHE=$HOME/.cache/electron
+    #     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
 cache:
   yarn: true
@@ -35,24 +34,24 @@ script:
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release:linux"
+        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release"
     else
       yarn release:win
     fi
 
-branches:
-  except: /^untagged/
+# branches:
+#   except: /^untagged/
 
-deploy:
-  provider: releases
-  token: $GH_TOKEN
-  file_glob: true
-  file:
-    - 'dist/*.AppImage'
-    - 'dist/*.exe'
-  overwrite: true
-  skip_cleanup: true
-  draft: true
-  on:
-    branch: fix/release
-    tags: true
+# deploy:
+#   provider: releases
+#   token: $GH_TOKEN
+#   file_glob: true
+#   file:
+#     - 'dist/*.AppImage'
+#     - 'dist/*.exe'
+#   overwrite: true
+#   skip_cleanup: true
+#   draft: true
+#   on:
+#     branch: fix/release
+#     tags: true

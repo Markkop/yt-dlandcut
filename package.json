@@ -1,6 +1,6 @@
 {
   "name": "yt-dlandcut",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Download and Cut an Youtube video by its starting and ending times",
   "repository": "github:markkop/yt-dlandcut",
   "main": "build/electron/main.js",
@@ -12,6 +12,7 @@
     "dist:win": "electron-builder build --win portable ",
     "dist": "electron-builder build --win portable --linux AppImage ",
     "build": "babel src --out-dir build",
+    "release": "yarn build && electron-builder --linux --win -p onTagOrDraft",
     "release:linux": "yarn build && electron-builder --linux",
     "release:win": "yarn build && electron-builder --win portable"
   },
