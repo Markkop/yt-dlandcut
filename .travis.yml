@@ -8,7 +8,8 @@ jobs:
     - os: linux
       dist: trusty
       services: docker
-      language: generic
+      language: node_js
+      node_js: '10'
 
     - os: windows
       language: node_js
