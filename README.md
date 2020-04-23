@@ -5,17 +5,28 @@
 
 ## What it is
 
-This tool downloads a Youtube video to `videos` folder and cuts it given a starting and an ending time.\
-The time must be in the format `HH:MM:SS` and the duration can't be longer than 24 hours.
+This app downloads youtube videos using youtube-dl and cuts them with ffmpeg given starting and ending times.  
+Currently only Windows e Linux platforms are supported.
 
 ## How to use
 
-- Install NodeJS and ffmpeg
-- Clone or download this repository
-- Run `npm start` inside the project's folder
-- Provide required information
-- Check `videos` folder
+Download the binary according to your OS:
 
-## User Options
+- Linux
+- Windows
 
-![An example of user options](http://i.imgur.com/avvmjF8.png)
+## How to develop
+
+Clone this repository and run `yarn` to install dependencies.  
+Make sure to have `node` and `npm` installed.
+
+## Options
+
+- Youtube url (required)
+  Can be a shortened version or a normal one
+
+- Starting and ending times (required)
+  In the HH:MM:SS format. It can't be longer than 24h
+
+- Convert to mp3
+  It converts the same output to mp3
