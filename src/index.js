@@ -1,43 +1,51 @@
-import { getDuration, askOptions, formatFileName, openFile } from './helpers'
-import { downloadFromYoutube, getVideoTitle } from './download'
-import { cutVideo, convertToMp3 } from './convert'
+import path from 'path'
+import { getDuration, openItem, slugify, updateStatus } from './helpers'
+import { downloadFromYoutube, getVideoTitle, useWindowsBinaryYoutubeDl } from './download'
+import { cutVideo, convertToMp3, useWindowsBinaryFfmpeg } from './convert'
+import { basePath } from './settings'
 
 /**
  * Runs this package
  */
-;(async function main() {
+export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
   try {
-    const answers = await askOptions()
-    const { youtubeUrl, startTime, endTime, customFileName, openAtFinish, toMp3 } = answers
+    if (!youtubeUrl || !startTime || !endTime) {
+      throw new Error('Missing obrigatory argument')
+    }
+    updateStatus('Starting...')
+
+    // TO DO: refactor windows binaries usage
+    useWindowsBinaryYoutubeDl()
+    useWindowsBinaryFfmpeg()
+
+    const { customFileName, openAtFinish, toMp3, overwriteDownload } = options
 
     const title = await getVideoTitle(youtubeUrl)
-    const formattedTitle = formatFileName(title)
-    const fileName = formatFileName(customFileName) || formattedTitle
+    const downloadFileName = slugify(title)
+    const cutFileName = slugify(customFileName || `${downloadFileName}-${startTime}-${endTime}`)
 
-    const downloadPath = `resources/downloads/${formattedTitle}.mp4`
-    const convertPath = `resources/cuts/${fileName}.mp4`
-    const audioPath = `resources/audios/${fileName}.mp3`
+    const outputPath = path.join(basePath, downloadFileName)
+    const downlodedFile = await downloadFromYoutube(
+      youtubeUrl,
+      outputPath,
+      downloadFileName,
+      overwriteDownload
+    )
 
-    const hasDownloaded = await downloadFromYoutube(youtubeUrl, downloadPath)
-    if (!hasDownloaded) {
-      throw new Error('>> Video was not downloaded')
-    }
     const duration = getDuration(startTime, endTime)
-    const hasCut = await cutVideo(downloadPath, convertPath, startTime, duration)
-    if (!hasCut) {
-      throw new Error('>> Video was not cut')
-    }
+    let convertedFile = await cutVideo(downlodedFile, outputPath, cutFileName, startTime, duration)
 
-    let hasConvertedToMp3 = false
     if (toMp3) {
-      hasConvertedToMp3 = await convertToMp3(convertPath, audioPath)
+      convertedFile = await convertToMp3(convertedFile, outputPath, cutFileName)
     }
 
     if (openAtFinish) {
-      const path = hasConvertedToMp3 ? audioPath : convertPath
-      openFile(path)
+      openItem(convertedFile)
     }
+
+    updateStatus('Finished! Check your files in your home folder.')
   } catch (error) {
+    // TO DO: better error handling on all files
     console.error(error)
   }
-})()
+}

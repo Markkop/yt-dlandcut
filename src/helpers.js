@@ -1,96 +1,5 @@
-import inquirer from 'inquirer'
-import { exec } from 'child_process'
-import settings from './defaultSettings'
-
-/**
- * @typedef UserOptions
- * @property { String } youtubeUrl
- * @property { String } startTime HH:MM:SS
- * @property { String } endTime HH:MM:SS
- * @property { String } customFileName
- * @property { Boolean } toMp3
- * @property { Boolean } openAtFinish
- */
-
-/**
- * Validate if time is in expected format
- * @param { String } value
- * @returns { true|String } success or error message
- */
-function validateTime(value) {
-  const expectedFormat = /\d{2}:\d{2}:\d{2}/
-  if (expectedFormat.test(value)) {
-    return true
-  }
-  return 'Wrong format'
-}
-
-/**
- * Validate if url is in expected format
- * @param { String } value
- * @returns { true|String } success or error message
- */
-function validateYoutubeUrl(value) {
-  const isYouTubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//
-  if (isYouTubeRegex.test(value)) {
-    return true
-  }
-
-  return 'Please enter a youtube url'
-}
-
-/**
- * Request user input
- * @returns { UserOptions }
- */
-export function askOptions() {
-  return new Promise((resolve, reject) => {
-    const { startTime, endTime, url } = settings
-
-    const questions = [
-      {
-        type: 'input',
-        name: 'youtubeUrl',
-        message: 'Please input the youtube video you wish to download and cut:',
-        default: url,
-        validate: validateYoutubeUrl,
-      },
-      {
-        type: 'input',
-        name: 'startTime',
-        message: 'Please provide the startTime in the format HH:MM:SS',
-        default: startTime,
-        validate: validateTime,
-      },
-      {
-        type: 'input',
-        name: 'endTime',
-        message: 'Please provide the endTime in the format HH:MM:SS',
-        default: endTime,
-        validate: validateTime,
-      },
-      {
-        type: 'input',
-        name: 'customFileName',
-        message: 'Give the file a custom name or leave empty',
-      },
-      {
-        type: 'confirm',
-        name: 'toMp3',
-        message: 'Do you wish to convert this fragment to mp3?',
-        default: false,
-      },
-      {
-        type: 'confirm',
-        name: 'openAtFinish',
-        message: 'Open file after finishing?',
-        default: false,
-      },
-    ]
-
-    inquirer.prompt(questions).then((answers) => resolve(answers))
-  })
-}
+import { shell } from 'electron'
+import fs from 'fs'
 
 /**
  * Get the time duration betweet two dates
@@ -106,21 +15,66 @@ export function getDuration(startTime, endTime) {
 }
 
 /**
- * Format a title to filename
- * @param { String } title
- * @returns { String } fileName
+ * Opens a file or a folder
+ * @param { String } path
  */
-export function formatFileName(title) {
-  return title.replace(/\W/g, '_')
+export function openItem(path) {
+  shell.openItem(path)
+  const message = `Opening ${path} `
+  updateStatus(message)
 }
 
 /**
- * Opens a file
+ * Check if path exists and if doesn't,
+ * then creates it.
  * @param { String } path
  */
-export function openFile(path) {
-  console.log('> Opening file with VLC Player')
-  const command = `vlc ${path}`
-  console.log(`>> ${command}`)
-  exec(command)
+export function checkAndCreateFolder(path) {
+  if (!fs.existsSync(path)) {
+    updateStatus(`Path ${path} not found, creating one`)
+    fs.mkdirSync(path, { recursive: true })
+  }
+}
+
+/**
+ * Updates shown status message
+ * @param { String } message
+ */
+export function updateStatus(message) {
+  const today = new Date()
+  const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
+  console.log(message)
+  if (!document) {
+    return
+  }
+
+  const status = document.querySelector('#status')
+  if (!status) {
+    return
+  }
+
+  const previousText = status.innerText
+  if (!previousText) {
+    status.innerText = `[${time}] ${message}`
+  } else {
+    status.innerText = `${previousText}\n[${time}] ${message}`
+  }
+}
+
+export function slugify(str) {
+  const map = {
+    '-': ':| |_',
+    a: 'á|à|ã|â|À|Á|Ã|Â',
+    e: 'é|è|ê|É|È|Ê',
+    i: 'í|ì|î|Í|Ì|Î',
+    o: 'ó|ò|ô|õ|Ó|Ò|Ô|Õ',
+    u: 'ú|ù|û|ü|Ú|Ù|Û|Ü',
+    c: 'ç|Ç',
+    n: 'ñ|Ñ',
+  }
+  str = str.toLowerCase()
+  for (let pattern in map) {
+    str = str.replace(new RegExp(map[pattern], 'g'), pattern)
+  }
+  return str
 }

@@ -1,24 +1,49 @@
 {
   "name": "yt-dlandcut",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Download and Cut an Youtube video by its starting and ending times",
-  "main": "index.js",
+  "repository": "github:markkop/yt-dlandcut",
+  "main": "build/electron/main.js",
   "scripts": {
-    "start": "babel-node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf resources/*/*"
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps",
+    "pack": "electron-builder --dir",
+    "dist:linux": "electron-builder build --linux AppImage ",
+    "dist:win": "electron-builder build --win portable ",
+    "dist": "electron-builder build --win portable --linux AppImage ",
+    "build": "babel src --out-dir build",
+    "release": "build"
   },
   "keywords": [],
   "author": "Marcelo 'Mark' Kopmann",
   "license": "ISC",
   "dependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/runtime": "^7.9.2",
+    "ffmpeg-static": "^4.1.1",
     "fluent-ffmpeg": "^2.1.2",
-    "inquirer": "^7.1.0",
     "youtube-dl": "^3.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/node": "^7.8.7",
-    "@babel/preset-env": "^7.9.0"
+    "@babel/preset-env": "^7.9.0",
+    "electron": "^8.2.3",
+    "electron-builder": "^22.5.1"
+  },
+  "build": {
+    "appId": "com.electron.yt-dlandcut",
+    "asar": false,
+    "files": [
+      "build/**/*",
+      "bin/*",
+      "public/*",
+      "node_modules/youtube-dl/bin/youtube-dl",
+      "package.json"
+    ],
+    "publish": [
+      "github"
+    ]
   }
 }

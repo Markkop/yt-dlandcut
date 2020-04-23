@@ -1,0 +1,224 @@
+body {
+  --color1: #ffe74c;
+  --color2: #ff5964;
+  --color3: #ffffff;
+  --color4: #6bf178;
+  --color5: #35a7ff;
+  --color6: #004e64;
+
+  margin: 0;
+  padding: 0;
+
+  font-family: 'Roboto', sans-serif;
+  background-image: linear-gradient(141deg, var(--color3) 0%, var(--color5) 100%);
+}
+
+p {
+  color: var(--color6);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 20px;
+  margin: auto;
+  height: 5vh;
+  background-image: linear-gradient(141deg, var(--color1) 0%, var(--color2) 100%);
+  border-bottom: 1px solid black;
+}
+
+.logo-container {
+  display: flex;
+}
+
+.github-project {
+  display: flex;
+  cursor: pointer;
+}
+
+.github-project > * {
+  margin: auto 5px;
+}
+
+.header-info {
+  margin: 5px;
+  font-size: 18px;
+  margin: auto 0;
+  font-weight: bold;
+}
+
+.content {
+  margin: auto;
+  padding: 0;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 350px;
+}
+
+form > * {
+  margin: 3px 0;
+}
+
+input {
+  text-align: center;
+  border-radius: 4px;
+  background-image: linear-gradient(141deg, #fff7bf 0%, #ffc8cc 100%);
+}
+
+label {
+  text-align: center;
+  font-size: 20px;
+  color: #004e64;
+  font-weight: bold;
+}
+
+.times-container {
+  margin: auto 0;
+}
+
+.time-input-container {
+  display: flex;
+  justify-content: left;
+}
+
+.time-input-container label,
+.checkbox-option label {
+  font-size: 14px;
+  margin: auto 0;
+  width: 120px;
+}
+
+.time-input {
+  align-self: center;
+  width: 60px;
+}
+
+.checkbox-option {
+  display: flex;
+  justify-content: center;
+}
+
+.times-and-options {
+  display: flex;
+  justify-content: center;
+}
+
+.filename-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+label[for='filename'] {
+  font-size: 18px;
+  margin: auto 0;
+}
+
+input#filename {
+  align-self: center;
+  width: 150px;
+}
+
+.status-container {
+  min-height: 100px;
+  height: fit-content;
+  background-color: black;
+  border: 2px solid #7699d4;
+  padding: 10px;
+}
+
+#status {
+  color: var(--color4);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Footer */
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  position: absolute;
+  width: 100%;
+  height: 10vh;
+}
+
+.footer-text {
+  padding: 5px 10px;
+}
+
+.footer-text > * {
+  margin: 1px;
+}
+
+.socials {
+  display: flex;
+  padding: 0 10px;
+}
+
+.socials svg {
+  margin: auto 5px;
+  cursor: pointer;
+}
+
+.dayu-twitter,
+.myblog {
+  cursor: pointer;
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  font-size: 12px;
+  width: 70px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  top: -55px;
+  left: 125%;
+
+  margin-left: -25px;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.tooltip .tooltiptext::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #555 transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
