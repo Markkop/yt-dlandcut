@@ -57,3 +57,4 @@ deploy:
   draft: true
   on:
     branch: fix/release
+    tags: true
