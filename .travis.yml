@@ -44,7 +44,6 @@ script:
 
 branches:
   except: /^untagged/
-  only: 'fix/release'
 
 deploy:
   provider: releases
@@ -55,3 +54,5 @@ deploy:
     - 'dist/*.exe'
   overwrite: true
   skip_cleanup: true
+  on:
+    branch: fix/release

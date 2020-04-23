@@ -1,6 +1,6 @@
 {
   "name": "yt-dlandcut",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Download and Cut an Youtube video by its starting and ending times",
   "repository": "github:markkop/yt-dlandcut",
   "main": "build/electron/main.js",
@@ -9,11 +9,11 @@
     "postinstall": "electron-builder install-app-deps",
     "pack": "electron-builder --dir",
     "dist:linux": "electron-builder build --linux AppImage ",
-    "dist:win": "electron-builder build --win portable ",
-    "dist": "electron-builder build --win portable --linux AppImage ",
+    "dist:win": "electron-builder build --win ",
+    "dist": "electron-builder build --win --linux AppImage ",
     "build": "babel src --out-dir build",
-    "release:linux": "yarn build && electron-builder --linux AppImage -p onTagOrDraft",
-    "release:win": "yarn build && electron-builder --win portable -p onTagOrDraft"
+    "release:linux": "yarn build && electron-builder --linux -p onTagOrDraft",
+    "release:win": "yarn build && electron-builder --win -p onTagOrDraft"
   },
   "keywords": [],
   "author": "Marcelo 'Mark' Kopmann",
