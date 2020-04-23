@@ -1,0 +1,23 @@
+language: node_js
+node_js: '10.18.0'
+
+cache:
+  directories:
+    - node_modules
+    - $HOME/.cache/electron
+    - $HOME/.cache/electron-builder
+    - $HOME/.npm/_prebuilds
+
+env:
+  global:
+    - ELECTRON_CACHE=$HOME/.cache/electron
+    - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
+jobs:
+  include:
+    - stage: Deploy linux
+      if: tag IS present
+      os: linux
+      dist: trusty
+      script:
+        - npm run release
