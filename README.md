@@ -36,7 +36,7 @@ Electron Builder will know that it should also deploy after building because of 
 You can set this environment variable by adding `export GH_TOKEN=CHANGE_THIS` to `~/.zshrc` or `~/.bashrc` file and sourcing it with `source ~./zshrc` after [creating a token](https://github.com/settings/tokens/new).
 
 However, the [recommend way](https://www.electron.build/configuration/publish#recommended-github-releases-workflow) is by using a Continuous Integration service, [TravisCI](https://travis-ci.com/) in this case.
-First, a collaborator have to [draft a new release](https://help.github.com/articles/creating-releases/) with the `package.json` version. Then, after every push, TravisCI will run `yarn release`, building the files and providing them as assets in the drafted Github's release.
+First, a collaborator have to [draft a new release](https://help.github.com/articles/creating-releases/) with the `package.json` version. Then, after every push, TravisCI will run `yarn build`, building the files and providing them as assets in the drafted Github's release.
 
 For this to happen, it's required to have `"build": { "publish": "github" }` in `package.json` and `GH_TOKEN` as environment variable inside TravisCI dashboard's build settings.  
 Then after a passing build, a collaborator can simply publish it.  
