@@ -30,3 +30,7 @@ script:
     else
       echo 'other build method'
     fi
+
+branches:
+  except:
+    - "/^v\\d+\\.\\d+\\.\\d+$/"
