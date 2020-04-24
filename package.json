@@ -1,6 +1,6 @@
 {
   "name": "yt-dlandcut",
-  "version": "2.0.14",
+  "version": "2.0.15",
   "description": "Download and Cut an Youtube video by its starting and ending times",
   "repository": "github:markkop/yt-dlandcut",
   "main": "build/electron/main.js",
@@ -12,7 +12,12 @@
     "build": "yarn transpile && electron-builder",
     "release": "yarn transpile && electron-builder --win --linux"
   },
-  "keywords": [],
+  "keywords": [
+    "youtube-dl",
+    "ffmpeg",
+    "electron",
+    "travisci"
+  ],
   "author": "Marcelo 'Mark' Kopmann",
   "license": "ISC",
   "dependencies": {
