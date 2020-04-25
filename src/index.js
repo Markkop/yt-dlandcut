@@ -12,7 +12,7 @@ export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
     if (!youtubeUrl || !startTime || !endTime) {
       throw new Error('Missing obrigatory argument')
     }
-    updateStatus('Starting...')
+    updateStatus('✨ Starting...')
 
     await checkAndDownloadBinaries(binariesPath)
 
@@ -41,9 +41,9 @@ export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
       openItem(convertedFile)
     }
 
-    updateStatus('Finished! Check your files in your home folder.')
+    updateStatus('🎉 Finished! Check your files in your home folder.')
   } catch (error) {
-    updateStatus(`Something bad happened :c. Here's what you can try:
+    updateStatus(`🔥 Something bad happened :c. Here's what you can try:
     - Clean your ${binariesPath} folder and try again
     - Delete the video folder or check "Download again" option
     - Check the youtube url and time interval provided

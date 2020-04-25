@@ -20,7 +20,7 @@ export function getDuration(startTime, endTime) {
  */
 export function openItem(path) {
   shell.openItem(path)
-  const message = `Opening ${path} `
+  const message = `⚙️ Opening ${path} `
   updateStatus(message)
 }
 
@@ -31,7 +31,7 @@ export function openItem(path) {
  */
 export function checkAndCreateFolder(path) {
   if (!fs.existsSync(path)) {
-    updateStatus(`Path ${path} not found, creating one`)
+    updateStatus(`⚙️ Path ${path} not found, creating one`)
     fs.mkdirSync(path, { recursive: true })
   }
 }
@@ -42,7 +42,10 @@ export function checkAndCreateFolder(path) {
  */
 export function updateStatus(message) {
   const today = new Date()
-  const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
+  const hours = (today.getHours() < 10 ? '0' : '') + today.getHours()
+  const minutes = (today.getMinutes() < 10 ? '0' : '') + today.getMinutes()
+  const seconds = (today.getSeconds() < 10 ? '0' : '') + today.getSeconds()
+  const time = `${hours}:${minutes}:${seconds}`
   console.log(message)
   if (typeof document === 'undefined') {
     return

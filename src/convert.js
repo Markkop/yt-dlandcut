@@ -23,16 +23,16 @@ export function cutVideo(inputPath, outputPath, fileName, startTime, duration) {
       .setDuration(duration)
       .setFfmpegPath(ffmpegFilePath)
       .on('start', function (commandLine) {
-        const message = `Starting ffmpeg with command:\n${commandLine}`
+        const message = `⚙️ Starting ffmpeg with command:\n${commandLine}`
         updateStatus(message)
       })
       .on('error', function (err) {
-        updateStatus(`>> Error while converting: ${err}`)
+        updateStatus(`❌ Error while converting: ${err}`)
         reject(err)
       })
       .on('end', function (err) {
         if (!err) {
-          const message = `Video has been cut with success to ${outputFilePath}`
+          const message = `✅ Video has been cut with success to ${outputFilePath}`
           updateStatus(message)
           resolve(outputFilePath)
         }
@@ -58,16 +58,16 @@ export function convertToMp3(inputPath, outputPath, fileName) {
       .toFormat('mp3')
       .setFfmpegPath(ffmpegFilePath)
       .on('start', function (commandLine) {
-        const message = `Starting ffmpeg with command:\n${commandLine}`
+        const message = `⚙️ Starting ffmpeg with command:\n${commandLine}`
         updateStatus(message)
       })
       .on('error', function (err) {
-        updateStatus(`>> Error while converting: ${err}`)
+        updateStatus(`❌ Error while converting: ${err}`)
         reject(false)
       })
       .on('end', function (err) {
         if (!err) {
-          const message = `Video has been converted with success to ${outputFilePath}`
+          const message = `✅ Video has been converted with success to ${outputFilePath}`
           updateStatus(message)
           resolve(outputFilePath)
         }
