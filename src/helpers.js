@@ -1,5 +1,5 @@
-import { shell } from 'electron'
 import fs from 'fs'
+import { shell } from 'electron'
 
 /**
  * Get the time duration betweet two dates
@@ -44,7 +44,7 @@ export function updateStatus(message) {
   const today = new Date()
   const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
   console.log(message)
-  if (!document) {
+  if (typeof document === 'undefined') {
     return
   }
 

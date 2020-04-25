@@ -1,21 +1,7 @@
-import { remote } from 'electron'
 import path from 'path'
 import ffmpeg from 'fluent-ffmpeg'
 import { checkAndCreateFolder, updateStatus } from './helpers'
-import pathToFfmpeg from 'ffmpeg-static'
-let ffmpegPath = pathToFfmpeg
-
-/**
- * Change ffmpeg binary to its exe version.
- * TO DO: refactor this
- */
-export function useWindowsBinaryFfmpeg() {
-  if (process.platform === 'win32') {
-    ffmpegPath = path.resolve(remote.app.getAppPath(), 'bin/ffmpeg.exe')
-    const message = `Windows detected: using ffmpeg.exe at ${ffmpegPath}`
-    updateStatus(message)
-  }
-}
+import { ffmpegFilePath } from './settings'
 
 /**
  * Cut videos by it's start time and duration in seconds
@@ -35,7 +21,7 @@ export function cutVideo(inputPath, outputPath, fileName, startTime, duration) {
     conv
       .setStartTime(startTime)
       .setDuration(duration)
-      .setFfmpegPath(ffmpegPath)
+      .setFfmpegPath(ffmpegFilePath)
       .on('start', function (commandLine) {
         const message = `Starting ffmpeg with command:\n${commandLine}`
         updateStatus(message)
@@ -70,7 +56,7 @@ export function convertToMp3(inputPath, outputPath, fileName) {
     const conv = new ffmpeg({ source: inputPath })
     conv
       .toFormat('mp3')
-      .setFfmpegPath(ffmpegPath)
+      .setFfmpegPath(ffmpegFilePath)
       .on('start', function (commandLine) {
         const message = `Starting ffmpeg with command:\n${commandLine}`
         updateStatus(message)

@@ -5,8 +5,9 @@
   "repository": "github:markkop/yt-dlandcut",
   "main": "build/electron/main.js",
   "scripts": {
+    "test": "babel-node src/download.js",
     "postinstall": "electron-builder install-app-deps",
-    "start": "electron .",
+    "start": "yarn transpile && electron .",
     "transpile": "babel src --out-dir build",
     "pack": "electron-builder --dir",
     "build": "yarn transpile && electron-builder",
@@ -24,7 +25,7 @@
     "@babel/cli": "^7.8.4",
     "@babel/plugin-transform-runtime": "^7.9.0",
     "@babel/runtime": "^7.9.2",
-    "ffmpeg-static": "^4.1.1",
+    "axios": "^0.19.2",
     "fluent-ffmpeg": "^2.1.2",
     "youtube-dl": "^3.0.2"
   },
@@ -40,9 +41,7 @@
     "asar": false,
     "files": [
       "build/**/*",
-      "bin/*",
       "public/*",
-      "node_modules/youtube-dl/bin/youtube-dl",
       "package.json"
     ],
     "linux": {

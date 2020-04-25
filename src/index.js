@@ -1,8 +1,8 @@
 import path from 'path'
 import { getDuration, openItem, slugify, updateStatus } from './helpers'
-import { downloadFromYoutube, getVideoTitle, useWindowsBinaryYoutubeDl } from './download'
-import { cutVideo, convertToMp3, useWindowsBinaryFfmpeg } from './convert'
-import { basePath } from './settings'
+import { downloadFromYoutube, getVideoTitle, checkAndDownloadBinaries } from './download'
+import { cutVideo, convertToMp3 } from './convert'
+import { basePath, binariesPath } from './settings'
 
 /**
  * Runs this package
@@ -14,9 +14,7 @@ export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
     }
     updateStatus('Starting...')
 
-    // TO DO: refactor windows binaries usage
-    useWindowsBinaryYoutubeDl()
-    useWindowsBinaryFfmpeg()
+    await checkAndDownloadBinaries(binariesPath)
 
     const { customFileName, openAtFinish, toMp3, overwriteDownload } = options
 
@@ -45,7 +43,12 @@ export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
 
     updateStatus('Finished! Check your files in your home folder.')
   } catch (error) {
-    // TO DO: better error handling on all files
-    console.error(error)
+    updateStatus(`Something bad happened :c. Here's what you can try:
+    - Clean your ${binariesPath} folder and try again
+    - Check the youtube url and times
+    - Lay down and cry :'(
+    - Ask me for help on Twitter: @HeyMarkKop
+    - Check the error below, it might have something useful`)
+    updateStatus(error)
   }
 }
