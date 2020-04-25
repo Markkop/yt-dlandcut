@@ -36,15 +36,20 @@ function listenAndHandleForm() {
   })
 
   form.addEventListener('formdata', async (event) => {
-    const data = event.formData
-    const entries = [...data.entries()]
-    const values = [...data.values()]
+    try {
+      const data = event.formData
+      const entries = [...data.entries()]
+      const values = [...data.values()]
 
-    const [youtubeUrl, startTime, endTime] = values
-    const options = entries.reduce(reduceOptionsToObject, {})
+      const [youtubeUrl, startTime, endTime] = values
+      const options = entries.reduce(reduceOptionsToObject, {})
 
-    await downloadAndCut(youtubeUrl, startTime, endTime, options)
-    toggleButton()
+      await downloadAndCut(youtubeUrl, startTime, endTime, options)
+      toggleButton()
+    } catch (error) {
+      toggleButton()
+      console.error(error)
+    }
   })
 }
 
