@@ -43,13 +43,13 @@ export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
 
     updateStatus('🎉 Finished! Check your files in your home folder.')
   } catch (error) {
-    updateStatus(`🔥 Something bad happened :c. Here's what you can try:
+    updateStatus(`🤕 Something bad happened :c. Here's what you can try:
     - Clean your ${binariesPath} folder and try again
-    - Delete the video folder or check "Download again" option
-    - Check the youtube url and time interval provided
+    - Delete video folder and/or check "Download again" option
+    - Check youtube url and time interval provided
     - Lay down and cry :'(
-    - Ask me for help on Twitter: @HeyMarkKop
-    - Check the error below, it might have something useful`)
+    - Ask me for help on Twitter: @HeyMarkKop (send a print!)
+    - Check the error informed, it might have something useful`)
     updateStatus(error)
   }
 }

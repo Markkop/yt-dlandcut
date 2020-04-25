@@ -18,20 +18,20 @@
     "electron",
     "travisci"
   ],
-  "author": "Marcelo 'Mark' Kopmann",
-  "license": "ISC",
+  "author": "Marcelo 'Mark' Kopmann <marcelokopmann@gmail.com> (https://markkop.dev)",
+  "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/plugin-transform-runtime": "^7.9.0",
     "@babel/runtime": "^7.9.2",
+    "@babel/plugin-transform-runtime": "^7.9.0",
     "axios": "^0.19.2",
-    "electron-context-menu": "^1.0.0",
     "fluent-ffmpeg": "^2.1.2",
-    "youtube-dl": "^3.0.2"
+    "youtube-dl": "^3.0.2",
+    "electron-context-menu": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/node": "^7.8.7",
+    "@babel/cli": "^7.8.4",
     "@babel/preset-env": "^7.9.0",
     "electron": "^8.2.3",
     "electron-builder": "^22.5.1"

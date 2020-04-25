@@ -38,7 +38,7 @@ export function downloadFromYoutube(youtubeUrl, downloadPath, fileName, overwrit
       const filePath = path.join(downloadPath, `${fileName}.mp4`)
 
       if (fs.existsSync(filePath) && !overwriteFile) {
-        const message = `⚙️ Skipping download: file exists and overwrite option was not checked`
+        const message = `💡 Skipping download: file exists and overwrite option was not checked`
         updateStatus(message)
         return resolve(filePath)
       }
