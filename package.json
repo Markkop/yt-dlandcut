@@ -1,11 +1,10 @@
 {
   "name": "yt-dlandcut",
-  "version": "2.0.15",
+  "version": "2.1.0",
   "description": "Download and Cut an Youtube video by its starting and ending times",
   "repository": "github:markkop/yt-dlandcut",
   "main": "build/electron/main.js",
   "scripts": {
-    "test": "babel-node src/download.js",
     "postinstall": "electron-builder install-app-deps",
     "start": "yarn transpile && electron .",
     "transpile": "babel src --out-dir build",
@@ -38,14 +37,14 @@
   },
   "build": {
     "appId": "com.electron.yt-dlandcut",
-    "asar": false,
     "files": [
       "build/**/*",
       "public/*",
       "package.json"
     ],
     "linux": {
-      "target": "appImage"
+      "target": "appImage",
+      "category": "Utility"
     },
     "win": {
       "target": "portable"

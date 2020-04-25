@@ -2,6 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'"
+    />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="./index.css" />
     <title>YouTube - Download and Cut</title>
@@ -30,7 +34,7 @@
             type="text"
             name="url"
             id="url"
-            value="https://www.youtube.com/watch?v=N9qjR6teBNw"
+            placeholder="https://www.youtube.com/watch?v=N9qjR6teBNw"
             pattern="^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.*"
             title="Youtube url"
             required
@@ -44,7 +48,7 @@
                   type="text"
                   name="startTime"
                   id="startTime"
-                  value="00:00:20"
+                  placeholder="00:00:20"
                   pattern="\d{2}:\d{2}:\d{2}"
                   title="HH:MM:SS"
                   maxlength="8"
@@ -58,7 +62,7 @@
                   type="text"
                   name="endTime"
                   id="endTime"
-                  value="00:00:22"
+                  placeholder="00:00:22"
                   pattern="\d{2}:\d{2}:\d{2}"
                   title="HH:MM:SS"
                   maxlength="8"

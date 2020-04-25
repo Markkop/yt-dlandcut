@@ -16,8 +16,12 @@ function createWindow() {
   mainWindow.loadFile('public/index.html')
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 }
+
+// Electron will default this to true soon, but we have to modify
+// it to avoid a annoying warn message
+app.allowRendererProcessReuse = true
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

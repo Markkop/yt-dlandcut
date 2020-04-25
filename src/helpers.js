@@ -61,6 +61,10 @@ export function updateStatus(message) {
   }
 }
 
+/**
+ * Replace or remove all characters that might cause problems
+ * @param { String } str
+ */
 export function slugify(str) {
   const map = {
     '-': ':| |_',
@@ -76,5 +80,8 @@ export function slugify(str) {
   for (let pattern in map) {
     str = str.replace(new RegExp(map[pattern], 'g'), pattern)
   }
+  str = str.replace(/[^a-zA-Z0-9-]/g, '') // Remove non letters and numbers, except for "-"
+  str = str.replace(/-{2,}/g, '-') // If there's more than one "-" consecutive, remove them
+  str = str.replace(/^-/g, '') // Can't start with "-" or youtube-dl throws error
   return str
 }

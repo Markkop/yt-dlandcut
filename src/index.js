@@ -45,7 +45,8 @@ export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
   } catch (error) {
     updateStatus(`Something bad happened :c. Here's what you can try:
     - Clean your ${binariesPath} folder and try again
-    - Check the youtube url and times
+    - Delete the video folder or check "Download again" option
+    - Check the youtube url and time interval provided
     - Lay down and cry :'(
     - Ask me for help on Twitter: @HeyMarkKop
     - Check the error below, it might have something useful`)

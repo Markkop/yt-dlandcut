@@ -32,7 +32,7 @@ export function cutVideo(inputPath, outputPath, fileName, startTime, duration) {
       })
       .on('end', function (err) {
         if (!err) {
-          const message = `Video ${inputPath} has been cut with success to ${outputFilePath}`
+          const message = `Video has been cut with success to ${outputFilePath}`
           updateStatus(message)
           resolve(outputFilePath)
         }
@@ -67,7 +67,7 @@ export function convertToMp3(inputPath, outputPath, fileName) {
       })
       .on('end', function (err) {
         if (!err) {
-          const message = `Video ${inputPath} converted with success to ${outputFilePath}`
+          const message = `Video has been converted with success to ${outputFilePath}`
           updateStatus(message)
           resolve(outputFilePath)
         }

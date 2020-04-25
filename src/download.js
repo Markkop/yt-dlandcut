@@ -34,7 +34,6 @@ export function getVideoTitle(url = '') {
 export function downloadFromYoutube(youtubeUrl, downloadPath, fileName, overwriteFile) {
   return new Promise((resolve, reject) => {
     try {
-      youtubedl.setYtdlBinary(youtubeDlFilePath)
       checkAndCreateFolder(downloadPath)
       const filePath = path.join(downloadPath, `${fileName}.mp4`)
 
@@ -44,16 +43,17 @@ export function downloadFromYoutube(youtubeUrl, downloadPath, fileName, overwrit
         return resolve(filePath)
       }
 
-      const video = youtubedl(youtubeUrl, ['--format=18'], { cwd: __dirname })
+      const video = youtubedl(youtubeUrl, ['--format=18', '--no-cache-dir'], { cwd: __dirname })
       video.on('info', function (info) {
-        const message = `Starting download from ${youtubeUrl} named ${info._filename} with size ${info.size}KB`
+        const size = info.size / 1000000
+        const message = `Starting download video ${info.title} with size ${size.toFixed(2)}MB`
         updateStatus(message)
       })
 
       video.pipe(fs.createWriteStream(filePath))
 
       video.on('end', function () {
-        const message = `Video from ${youtubeUrl} has been downloaded to ${filePath}`
+        const message = `Video has been downloaded to ${filePath}`
         updateStatus(message)
         resolve(filePath)
       })
@@ -98,6 +98,7 @@ export function checkAndDownloadBinaries() {
       success = await downloadFile(ffmpegUrl, binariesPath, ffmpegFileName)
     }
 
+    youtubedl.setYtdlBinary(youtubeDlFilePath)
     if (success) {
       return resolve(true)
     } else {
