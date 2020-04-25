@@ -48,6 +48,7 @@ export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
     - Delete video folder and/or check "Download again" option
     - Check youtube url and time interval provided
     - Lay down and cry :'(
+    - Make sure you're using the latest version
     - Ask me for help on Twitter: @HeyMarkKop (send a print!)
     - Check the error informed, it might have something useful`)
     updateStatus(error)

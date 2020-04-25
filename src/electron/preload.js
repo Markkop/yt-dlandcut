@@ -1,14 +1,16 @@
 const { downloadAndCut } = require('../../build')
-const { openItem } = require('../../build/helpers')
+const { openItem, checkUpdates, updateStatus } = require('../../build/helpers')
 const { basePath } = require('../../build/settings')
 const { shell } = require('electron')
 
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
 window.addEventListener('DOMContentLoaded', () => {
+  updateStatus('💡 Progress will appear here ;)')
   listenAndHandleForm()
   listenFolderButton()
   attachLinks()
+  checkUpdates()
 })
 
 /**

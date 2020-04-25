@@ -1,5 +1,63 @@
 import fs from 'fs'
 import { shell } from 'electron'
+import { version as currentVersion } from '../package.json'
+import axios from 'axios'
+
+/**
+ * Check if a detected version is newer than current
+ * TO DO: refactor this, perhaps recursively?
+ * @param { String } curr
+ * @param { String } detected
+ * @returns { Boolean } true if detected is newer
+ */
+function isNewVersion(curr, detected) {
+  const [currMajor, currMinor, currPatch] = curr.split('.').map(Number)
+  const [detectedMajor, detectedMinor, detectedPatch] = detected.split('.').map(Number)
+
+  if (detectedMajor === currMajor) {
+    if (detectedMinor === currMinor) {
+      if (detectedPatch === currPatch) {
+        return false
+      } else {
+        return detectedMinor > currMinor
+      }
+    } else {
+      return detectedMinor > currMinor
+    }
+  } else {
+    return detectedMajor > currMajor
+  }
+}
+
+/**
+ * Check if there's a new version released
+ * @returns { Promise<Boolean> } true if there is
+ */
+export function checkUpdates() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      axios.defaults.adapter = require('axios/lib/adapters/http')
+      const infoUrl = 'https://github.com/Markkop/yt-dlandcut/releases/latest/download/latest-linux.yml'
+      const response = await axios.get(infoUrl)
+      const data = response.data
+      const [fullMatch, detectedVersion] = data.match(/version: (.*?)\s/)
+      if (!detectedVersion) {
+        return resolve(false)
+      }
+
+      if (isNewVersion(currentVersion, detectedVersion)) {
+        updateStatus(
+          `🔥 New version ${detectedVersion} available! Current is ${currentVersion}.\nDownload at https://github.com/Markkop/yt-dlandcut/releases/latest/ `
+        )
+        return resolve(true)
+      }
+      return resolve(false)
+    } catch (error) {
+      updateStatus(`⚠ Update checking failed: ${error}`)
+      reject(false)
+    }
+  })
+}
 
 /**
  * Get the time duration betweet two dates
