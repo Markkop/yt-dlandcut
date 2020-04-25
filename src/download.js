@@ -43,7 +43,7 @@ export function downloadFromYoutube(youtubeUrl, downloadPath, fileName, overwrit
         return resolve(filePath)
       }
 
-      const video = youtubedl(youtubeUrl, ['--format=18', '--no-cache-dir'], { cwd: __dirname })
+      const video = youtubedl(youtubeUrl, ['--format=18', '--no-cache-dir'])
       video.on('info', function (info) {
         const size = info.size / 1000000
         const message = `⚙️ Starting download video ${info.title} with size ${size.toFixed(2)}MB`
@@ -56,6 +56,12 @@ export function downloadFromYoutube(youtubeUrl, downloadPath, fileName, overwrit
         const message = `✅ Video has been downloaded to ${filePath}`
         updateStatus(message)
         resolve(filePath)
+      })
+
+      video.on('error', function (error) {
+        const message = `❌ Download failed: ${error}`
+        updateStatus(message)
+        reject(false)
       })
     } catch (error) {
       updateStatus(`❌ Download failed: ${error}`)
