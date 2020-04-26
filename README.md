@@ -33,7 +33,7 @@ If you run into any problem, please [let me know](https://twitter.com/heymarkkop
 
 ## Development
 
-Make sure to have `node` and `npm` installed.  
+Make sure to have `node` and `yarn` installed.  
 Run `yarn` to install dependencies and `yarn start` to transpile and run the code.  
 By running `yarn build`, electron-builder will build a package inside `dist` folder according to your current operational system and following `build` options on `package.json`
 
