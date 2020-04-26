@@ -45,10 +45,12 @@
     ],
     "linux": {
       "target": "appImage",
-      "category": "Utility"
+      "category": "Utility",
+      "icon": "public/256x256.png"
     },
     "win": {
-      "target": "portable"
+      "target": "portable",
+      "icon": "public/256x256.ico"
     },
     "publish": "github"
   }

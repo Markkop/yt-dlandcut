@@ -114,7 +114,6 @@ function attachLinks() {
   const mapLinks = {
     '.github-icon': 'https://github.com/Markkop/yt-dlandcut',
     '.myblog': 'https://markkop.dev',
-    '.dayu-twitter': 'https://twitter.com/dayuwastaken',
     '.github-personal': 'https://github.com/Markkop',
     '.twitter-personal': 'https://twitter.com/HeyMarkKop',
     '.linkedin-personal': 'https://www.linkedin.com/in/marcelo-kopmann/',

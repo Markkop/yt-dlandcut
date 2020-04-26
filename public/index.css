@@ -41,9 +41,8 @@ header {
 }
 
 .header-info {
-  margin: 5px;
   font-size: 18px;
-  margin: auto 0;
+  margin: auto 5px;
   font-weight: bold;
 }
 
