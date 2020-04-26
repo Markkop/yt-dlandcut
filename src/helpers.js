@@ -114,12 +114,11 @@ export function updateStatus(message) {
     return
   }
 
-  const previousText = status.innerText
-  if (!previousText) {
-    status.innerText = `[${time}] ${message}`
-  } else {
-    status.innerText = `${previousText}\n[${time}] ${message}`
-  }
+  const p = document.createElement('p')
+  const text = `[${time}] ${message}`
+  p.innerText = text
+  twemoji.parse(p)
+  status.appendChild(p)
 }
 
 /**

@@ -51,6 +51,8 @@ header {
   padding: 0;
 }
 
+/* Form */
+
 .form-container {
   display: flex;
   justify-content: center;
@@ -127,6 +129,8 @@ input#filename {
   width: 150px;
 }
 
+/* Status/Log */
+
 .status-container {
   min-height: 100px;
   height: fit-content;
@@ -135,10 +139,18 @@ input#filename {
   padding: 10px;
 }
 
-#status {
+#status p {
+  margin: 3px 0;
   color: var(--color4);
   font-size: 12px;
-  line-height: 1.6;
+}
+
+/* Twemoji */
+img.emoji {
+  height: 1em;
+  width: 1em;
+  margin: 0 0.05em 0 0.1em;
+  vertical-align: -0.1em;
 }
 
 /* Footer */
