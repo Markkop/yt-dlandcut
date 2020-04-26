@@ -16,10 +16,10 @@ Currently it only supports **Windows** e **Linux**.
 
 ## Usage
 
-Download the [latest release](https://github.com/Markkop/yt-dlandcut/releases/latest) for Linux (**.appImage**) or Windows (**.exe**) at the [releases](https://github.com/Markkop/yt-dlandcut/releases/) page.
+Download the [latest release](https://github.com/Markkop/yt-dlandcut/releases/latest) for Linux (**.appImage**) or Windows (**.exe**) at the [releases](https://github.com/Markkop/yt-dlandcut/releases/) page.  
 The first time you run this app (or if required `binaries` are not found), the app will download youtube-dl and ffmpeg files according to your OS.  
 Currently they're being download from [youtube-dl](https://github.com/ytdl-org/youtube-dl/releases/latest) and [ffmpeg-static](https://github.com/eugeneware/ffmpeg-static/releases/latest) latest releases.  
-After finishing, a folder inside your home folder named `yt-dlandcut` will contain the files.
+After finishing, a folder inside your home folder named `yt-dlandcut` will contain the files.  
 If you run into any problem, please [let me know](https://twitter.com/heymarkkop).
 
 ## Options
@@ -33,8 +33,8 @@ If you run into any problem, please [let me know](https://twitter.com/heymarkkop
 
 ## Development
 
-Make sure to have `node` and `npm` installed.
-Run `yarn` to install dependencies and `yarn start` to transpile and run the code.
+Make sure to have `node` and `npm` installed.  
+Run `yarn` to install dependencies and `yarn start` to transpile and run the code.  
 By running `yarn build`, electron-builder will build a package inside `dist` folder according to your current operational system and following `build` options on `package.json`
 
 ## Deploy/Release
