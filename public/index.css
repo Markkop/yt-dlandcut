@@ -8,6 +8,7 @@ body {
 
   margin: 0;
   padding: 0;
+  min-height: 100vh;
 
   font-family: 'Roboto', sans-serif;
   background-image: linear-gradient(141deg, var(--color3) 0%, var(--color5) 100%);
@@ -22,7 +23,7 @@ header {
   justify-content: space-between;
   padding: 5px 20px;
   margin: auto;
-  height: 5vh;
+  height: 30px;
   background-image: linear-gradient(141deg, var(--color1) 0%, var(--color2) 100%);
   border-bottom: 1px solid black;
 }
@@ -47,8 +48,9 @@ header {
 }
 
 .content {
-  margin: auto;
+  margin: 10px;
   padding: 0;
+  height: 100%;
 }
 
 /* Form */
@@ -156,12 +158,16 @@ img.emoji {
 /* Footer */
 
 footer {
+  display: contents;
+  position: absolute;
+  width: 100%;
+  height: 40px;
+}
+
+.footer-container {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  position: absolute;
-  width: 100%;
-  height: 10vh;
 }
 
 .footer-text {

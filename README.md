@@ -1,14 +1,14 @@
-# :vhs: Youtube - Download and Cut
+# <img alt="Demo PrintsCreen" src="public/256x256.png" width="26"> Youtube - Download and Cut
 
 ![Repo status](https://www.repostatus.org/badges/latest/active.svg)
 [![Build Status](https://travis-ci.com/Markkop/yt-dlandcut.svg?branch=master)](https://travis-ci.com/Markkop/yt-dlandcut)
 ![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)
 
-## What is it
-
 <kbd>
-  <img border="1" alt="Demo PrintsCreen" src="http://i.imgur.com/PFMgM86.png" >
+  <img border="1" alt="Demo PrintsCreen" src="https://i.imgur.com/ZnELY8o.gif" >
 </kbd>
+
+## About
 
 This app **downloads** youtube videos using [youtube-dl](https://youtube-dl.org/) and **cuts** them with [ffmpeg](https://www.ffmpeg.org/) given starting and ending times.  
 Currently it only supports **Windows** e **Linux**.

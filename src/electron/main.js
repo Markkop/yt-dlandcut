@@ -8,7 +8,7 @@ contextMenu()
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 600,
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
