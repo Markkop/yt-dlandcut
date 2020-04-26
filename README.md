@@ -3,6 +3,7 @@
 ![Repo status](https://www.repostatus.org/badges/latest/active.svg)
 [![Build Status](https://travis-ci.com/Markkop/yt-dlandcut.svg?branch=master)](https://travis-ci.com/Markkop/yt-dlandcut)
 ![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/markkop/yt-dlandcut)
 
 <kbd>
   <img border="1" alt="Demo PrintsCreen" src="https://i.imgur.com/hx48SzZ.gif" >
