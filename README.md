@@ -5,7 +5,7 @@
 ![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)
 
 <kbd>
-  <img border="1" alt="Demo PrintsCreen" src="https://i.imgur.com/ZnELY8o.gif" >
+  <img border="1" alt="Demo PrintsCreen" src="https://i.imgur.com/IrTnJ40.gif" >
 </kbd>
 
 ## About

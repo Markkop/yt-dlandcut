@@ -2,7 +2,7 @@ body {
   --color1: #ffe74c;
   --color2: #ff5964;
   --color3: #ffffff;
-  --color4: #6bf178;
+  --color4: #9bfda5;
   --color5: #35a7ff;
   --color6: #004e64;
 
@@ -139,6 +139,10 @@ input#filename {
   background-color: black;
   border: 2px solid #7699d4;
   padding: 10px;
+}
+
+#status {
+  margin: 0;
 }
 
 #status p {
