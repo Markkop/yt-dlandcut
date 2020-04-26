@@ -26,7 +26,11 @@ script:
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn build"
+        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release --publish onTagOrDraft"
     else
       echo 'other build method'
     fi
+
+branches:
+  except:
+    - "/^v\\d+\\.\\d+\\.\\d+$/"

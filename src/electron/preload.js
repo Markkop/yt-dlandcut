@@ -1,14 +1,16 @@
 const { downloadAndCut } = require('../../build')
-const { openItem } = require('../../build/helpers')
+const { openItem, checkUpdates, updateStatus } = require('../../build/helpers')
 const { basePath } = require('../../build/settings')
 const { shell } = require('electron')
 
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
 window.addEventListener('DOMContentLoaded', () => {
+  updateStatus('💡 Progress will appear here ;)')
   listenAndHandleForm()
   listenFolderButton()
   attachLinks()
+  checkUpdates()
 })
 
 /**
@@ -36,15 +38,20 @@ function listenAndHandleForm() {
   })
 
   form.addEventListener('formdata', async (event) => {
-    const data = event.formData
-    const entries = [...data.entries()]
-    const values = [...data.values()]
+    try {
+      const data = event.formData
+      const entries = [...data.entries()]
+      const values = [...data.values()]
 
-    const [youtubeUrl, startTime, endTime] = values
-    const options = entries.reduce(reduceOptionsToObject, {})
+      const [youtubeUrl, startTime, endTime] = values
+      const options = entries.reduce(reduceOptionsToObject, {})
 
-    await downloadAndCut(youtubeUrl, startTime, endTime, options)
-    toggleButton()
+      await downloadAndCut(youtubeUrl, startTime, endTime, options)
+      toggleButton()
+    } catch (error) {
+      toggleButton()
+      console.error(error)
+    }
   })
 }
 
@@ -107,7 +114,6 @@ function attachLinks() {
   const mapLinks = {
     '.github-icon': 'https://github.com/Markkop/yt-dlandcut',
     '.myblog': 'https://markkop.dev',
-    '.dayu-twitter': 'https://twitter.com/dayuwastaken',
     '.github-personal': 'https://github.com/Markkop',
     '.twitter-personal': 'https://twitter.com/HeyMarkKop',
     '.linkedin-personal': 'https://www.linkedin.com/in/marcelo-kopmann/',

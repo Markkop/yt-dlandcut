@@ -1,11 +1,14 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow } = require('electron')
+const contextMenu = require('electron-context-menu')
 const path = require('path')
+
+contextMenu()
 
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 600,
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -16,8 +19,12 @@ function createWindow() {
   mainWindow.loadFile('public/index.html')
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 }
+
+// Electron will default this to true soon, but we have to modify
+// it to avoid a annoying warn message
+app.allowRendererProcessReuse = true
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

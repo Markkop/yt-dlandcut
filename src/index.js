@@ -1,8 +1,8 @@
 import path from 'path'
 import { getDuration, openItem, slugify, updateStatus } from './helpers'
-import { downloadFromYoutube, getVideoTitle, useWindowsBinaryYoutubeDl } from './download'
-import { cutVideo, convertToMp3, useWindowsBinaryFfmpeg } from './convert'
-import { basePath } from './settings'
+import { downloadFromYoutube, getVideoTitle, checkAndDownloadBinaries } from './download'
+import { cutVideo, convertToMp3 } from './convert'
+import { basePath, binariesPath } from './settings'
 
 /**
  * Runs this package
@@ -12,11 +12,9 @@ export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
     if (!youtubeUrl || !startTime || !endTime) {
       throw new Error('Missing obrigatory argument')
     }
-    updateStatus('Starting...')
+    updateStatus('✨ Starting...')
 
-    // TO DO: refactor windows binaries usage
-    useWindowsBinaryYoutubeDl()
-    useWindowsBinaryFfmpeg()
+    await checkAndDownloadBinaries(binariesPath)
 
     const { customFileName, openAtFinish, toMp3, overwriteDownload } = options
 
@@ -43,9 +41,16 @@ export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
       openItem(convertedFile)
     }
 
-    updateStatus('Finished! Check your files in your home folder.')
+    updateStatus('🎉 Finished! Check your files in your home folder.')
   } catch (error) {
-    // TO DO: better error handling on all files
-    console.error(error)
+    updateStatus(`🤕 Something bad happened :c. Here's what you can try:
+    - Clean your ${binariesPath} folder and try again
+    - Delete video folder and/or check "Download again" option
+    - Check youtube url and time interval provided
+    - Lay down and cry :'(
+    - Make sure you're using the latest version
+    - Ask me for help on Twitter: @HeyMarkKop (send a print!)
+    - Check the error informed, it might have something useful`)
+    updateStatus(error)
   }
 }

@@ -1,5 +1,63 @@
-import { shell } from 'electron'
 import fs from 'fs'
+import { shell } from 'electron'
+import { version as currentVersion } from '../package.json'
+import axios from 'axios'
+
+/**
+ * Check if a detected version is newer than current
+ * TO DO: refactor this, perhaps recursively?
+ * @param { String } curr
+ * @param { String } detected
+ * @returns { Boolean } true if detected is newer
+ */
+function isNewVersion(curr, detected) {
+  const [currMajor, currMinor, currPatch] = curr.split('.').map(Number)
+  const [detectedMajor, detectedMinor, detectedPatch] = detected.split('.').map(Number)
+
+  if (detectedMajor === currMajor) {
+    if (detectedMinor === currMinor) {
+      if (detectedPatch === currPatch) {
+        return false
+      } else {
+        return detectedMinor > currMinor
+      }
+    } else {
+      return detectedMinor > currMinor
+    }
+  } else {
+    return detectedMajor > currMajor
+  }
+}
+
+/**
+ * Check if there's a new version released
+ * @returns { Promise<Boolean> } true if there is
+ */
+export function checkUpdates() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      axios.defaults.adapter = require('axios/lib/adapters/http')
+      const infoUrl = 'https://github.com/Markkop/yt-dlandcut/releases/latest/download/latest-linux.yml'
+      const response = await axios.get(infoUrl)
+      const data = response.data
+      const [fullMatch, detectedVersion] = data.match(/version: (.*?)\s/)
+      if (!detectedVersion) {
+        return resolve(false)
+      }
+
+      if (isNewVersion(currentVersion, detectedVersion)) {
+        updateStatus(
+          `🔥 New version ${detectedVersion} available! Current is ${currentVersion}.\nDownload at https://github.com/Markkop/yt-dlandcut/releases/latest/ `
+        )
+        return resolve(true)
+      }
+      return resolve(false)
+    } catch (error) {
+      updateStatus(`⚠ Update checking failed: ${error}`)
+      reject(false)
+    }
+  })
+}
 
 /**
  * Get the time duration betweet two dates
@@ -20,7 +78,7 @@ export function getDuration(startTime, endTime) {
  */
 export function openItem(path) {
   shell.openItem(path)
-  const message = `Opening ${path} `
+  const message = `⚙️ Opening ${path} `
   updateStatus(message)
 }
 
@@ -31,7 +89,7 @@ export function openItem(path) {
  */
 export function checkAndCreateFolder(path) {
   if (!fs.existsSync(path)) {
-    updateStatus(`Path ${path} not found, creating one`)
+    updateStatus(`⚙️ Path ${path} not found, creating one`)
     fs.mkdirSync(path, { recursive: true })
   }
 }
@@ -42,9 +100,12 @@ export function checkAndCreateFolder(path) {
  */
 export function updateStatus(message) {
   const today = new Date()
-  const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
+  const hours = (today.getHours() < 10 ? '0' : '') + today.getHours()
+  const minutes = (today.getMinutes() < 10 ? '0' : '') + today.getMinutes()
+  const seconds = (today.getSeconds() < 10 ? '0' : '') + today.getSeconds()
+  const time = `${hours}:${minutes}:${seconds}`
   console.log(message)
-  if (!document) {
+  if (typeof document === 'undefined') {
     return
   }
 
@@ -53,14 +114,17 @@ export function updateStatus(message) {
     return
   }
 
-  const previousText = status.innerText
-  if (!previousText) {
-    status.innerText = `[${time}] ${message}`
-  } else {
-    status.innerText = `${previousText}\n[${time}] ${message}`
-  }
+  const p = document.createElement('p')
+  const text = `[${time}] ${message}`
+  p.innerText = text
+  twemoji.parse(p)
+  status.appendChild(p)
 }
 
+/**
+ * Replace or remove all characters that might cause problems
+ * @param { String } str
+ */
 export function slugify(str) {
   const map = {
     '-': ':| |_',
@@ -76,5 +140,8 @@ export function slugify(str) {
   for (let pattern in map) {
     str = str.replace(new RegExp(map[pattern], 'g'), pattern)
   }
+  str = str.replace(/[^a-zA-Z0-9-]/g, '') // Remove non letters and numbers, except for "-"
+  str = str.replace(/-{2,}/g, '-') // If there's more than one "-" consecutive, remove them
+  str = str.replace(/^-/g, '') // Can't start with "-" or youtube-dl throws error
   return str
 }
