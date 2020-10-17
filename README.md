@@ -1,6 +1,6 @@
 # <img alt="Demo PrintsCreen" src="public/256x256.png" width="26"> Youtube - Download and Cut
 
-![Repo status](https://www.repostatus.org/badges/latest/active.svg)
+![Repo status](https://www.repostatus.org/badges/latest/inactive.svg)
 [![Build Status](https://travis-ci.com/Markkop/yt-dlandcut.svg?branch=master)](https://travis-ci.com/Markkop/yt-dlandcut)
 ![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/markkop/yt-dlandcut)
