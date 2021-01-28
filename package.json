@@ -33,7 +33,7 @@
     "@babel/node": "^7.8.7",
     "@babel/cli": "^7.8.4",
     "@babel/preset-env": "^7.9.0",
-    "electron": "^8.2.3",
+    "electron": "^9.4.0",
     "electron-builder": "^22.5.1"
   },
   "build": {
