@@ -117,7 +117,9 @@ export function updateStatus(message) {
   const p = document.createElement('p')
   const text = `[${time}] ${message}`
   p.innerText = text
-  twemoji.parse(p)
+  // if (twemoji) {
+  //   twemoji.parse(p)
+  // }
   status.appendChild(p)
 }
 
