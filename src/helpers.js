@@ -2,6 +2,8 @@ import fs from 'fs'
 import { shell } from 'electron'
 import { version as currentVersion } from '../package.json'
 import axios from 'axios'
+import os from 'os'
+import { exec } from 'child_process'
 
 /**
  * Check if a detected version is newer than current
@@ -77,9 +79,23 @@ export function getDuration(startTime, endTime) {
  * @param { String } path
  */
 export function openItem(path) {
-  shell.openItem(path)
-  const message = `⚙️ Opening ${path} `
-  updateStatus(message)
+  if (typeof shell?.openItem === 'function') {
+    shell.openItem(path);
+  } else {
+    if (os.type() === 'Windows_NT') {
+      // On Windows
+      exec(`start "" "${path}"`);
+    } else if (os.type() === 'Darwin') {
+      // On MacOS
+      exec(`open "${path}"`);
+    } else {
+      // On Linux
+      exec(`xdg-open "${path}"`);
+    }
+  }
+
+  const message = `⚙️ Opening ${path}`;
+  updateStatus(message);
 }
 
 /**

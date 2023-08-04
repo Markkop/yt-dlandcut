@@ -41,7 +41,7 @@ export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
       openItem(convertedFile)
     }
 
-    updateStatus('🎉 Finished! Check your files in your home folder.')
+    updateStatus(`🎉 Finished! Check your files in your ${outputPath} folder.`)
   } catch (error) {
     updateStatus(`🤕 Something bad happened :c. Here's what you can try:
     - Clean your ${binariesPath} folder and try again

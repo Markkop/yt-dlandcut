@@ -11,14 +11,12 @@
 
 ## About
 
-This app **downloads** youtube videos using [youtube-dl](https://youtube-dl.org/) and **cuts** them with [ffmpeg](https://www.ffmpeg.org/) given starting and ending times.  
-Currently it only supports **Windows** e **Linux**.
+This app **downloads** youtube videos and **cuts** them with [ffmpeg](https://www.ffmpeg.org/) given starting and ending times.  
 
 ## Usage
 
-Download the [latest release](https://github.com/Markkop/yt-dlandcut/releases/latest) for Linux (**.appImage**) or Windows (**.exe**) at the [releases](https://github.com/Markkop/yt-dlandcut/releases/) page.  
-The first time you run this app (or if required `binaries` are not found), the app will download youtube-dl and ffmpeg files according to your OS.  
-Currently they're being download from [youtube-dl](https://github.com/ytdl-org/youtube-dl/releases/latest) and [ffmpeg-static](https://github.com/eugeneware/ffmpeg-static/releases/latest) latest releases.  
+Download the [latest release](https://github.com/Markkop/yt-dlandcut/releases/latest) for Linux (**.appImage**), Windows (**.exe**) or MacOS (**.dmg**) at the [releases](https://github.com/Markkop/yt-dlandcut/releases/) page.  
+The first time you run this app (or if required `binaries` are not found), the app will download ffmpeg files according to your OS.  
 After finishing, a folder inside your home folder named `yt-dlandcut` will contain the files.  
 If you run into any problem, please [let me know](https://twitter.com/heymarkkop).
 

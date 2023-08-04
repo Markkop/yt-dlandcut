@@ -62,6 +62,7 @@ export function convertToMp3(inputPath, outputPath, fileName) {
         updateStatus(message)
       })
       .on('error', function (err) {
+        console.error(err)
         updateStatus(`❌ Error while converting: ${err}`)
         reject(false)
       })
@@ -70,6 +71,8 @@ export function convertToMp3(inputPath, outputPath, fileName) {
           const message = `✅ Video has been converted with success to ${outputFilePath}`
           updateStatus(message)
           resolve(outputFilePath)
+        } else {
+          console.error(err)
         }
       })
       .saveToFile(outputFilePath)

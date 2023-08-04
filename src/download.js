@@ -1,38 +1,29 @@
 import fs from 'fs'
 import path from 'path'
-import youtubedl from 'youtube-dl'
 import { checkAndCreateFolder, updateStatus } from './helpers'
 import axios from 'axios'
-import { binariesPath, youtubeDlFilePath, ffmpegFilePath } from './settings'
+import { binariesPath, ffmpegFilePath } from './settings'
+import ytdl from 'ytdl-core'
 
 /**
  * Get Youtube's video title
  * @param { String } url
  * @returns { Promise<String> }
  */
-export function getVideoTitle(url = '') {
-  return new Promise((resolve, reject) => {
-    function callback(err, info) {
-      if (err) {
-        reject(err)
-      }
-      const { title } = info
-
-      resolve(title)
-    }
-    youtubedl.getInfo(url, callback)
-  })
+export async function getVideoTitle(url = '') {
+  try {
+    const info = await ytdl.getBasicInfo(url);
+    const { title } = info.videoDetails;
+    return title;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
-/**
- * Download youtube video
- * @param { String } youtubeUrl youtube video url
- * @param { String } downloadPath folder path
- * @param { String } fileName file name without extension
- * @returns { Promise<String|Boolean>} downloaded file path or false if fail
- */
-export function downloadFromYoutube(youtubeUrl, downloadPath, fileName, overwriteFile) {
-  return new Promise((resolve, reject) => {
+
+export async function downloadFromYoutube(youtubeUrl, downloadPath, fileName, overwriteFile) {
+  return new Promise(async (resolve, reject) => {
     try {
       checkAndCreateFolder(downloadPath)
       const filePath = path.join(downloadPath, `${fileName}.mp4`)
@@ -43,12 +34,27 @@ export function downloadFromYoutube(youtubeUrl, downloadPath, fileName, overwrit
         return resolve(filePath)
       }
 
-      const video = youtubedl(youtubeUrl, ['--format=18', '--no-cache-dir'])
-      video.on('info', function (info) {
-        const size = info.size / 1000000
-        const message = `⚙️ Starting download video ${info.title} with size ${size.toFixed(2)}MB`
-        updateStatus(message)
+      const info = await ytdl.getInfo(youtubeUrl)
+      const format = ytdl.chooseFormat(info.formats, {
+        filter: "audioandvideo",
+        quality: "highest"
       })
+
+      updateStatus(`⬇️ Downloading from ${youtubeUrl}`)
+      const video = ytdl.downloadFromInfo(info, {
+        quality: format.itag
+      })
+
+      let lastPercent = 0;
+
+      video.on('progress', (chunkLength, downloaded, total) => {
+        const percent = Math.floor((downloaded / total) * 100);
+        if (percent % 25 === 0 && percent !== lastPercent) {
+          const message = `⬇️ Downloading video ${fileName}: ${percent}% downloaded`;
+          updateStatus(message);
+          lastPercent = percent;
+        }
+      });
 
       video.pipe(fs.createWriteStream(filePath))
 
@@ -80,32 +86,23 @@ export function checkAndDownloadBinaries() {
     let success = true
     const isWin = process.platform === 'win32'
     const ffmpegFileName = isWin ? 'ffmpeg.exe' : 'ffmpeg'
-    const youtubeDlFileName = isWin ? 'youtube-dl.exe' : 'youtube-dl'
 
-    const hasYoutubeDl = fs.existsSync(youtubeDlFilePath)
     const hasFfmpeg = fs.existsSync(ffmpegFilePath)
 
-    if (!hasYoutubeDl && !hasFfmpeg) {
+    if (!hasFfmpeg) {
       updateStatus(
         "💡 It looks like this is your first time running this app, I'll download the required files it needs to work. ;)"
       )
     }
-    if (!hasYoutubeDl) {
-      updateStatus(`⚙️ File ${youtubeDlFilePath} not found, downloading...`)
-      // const youtubeDlUrl = `https://github.com/ytdl-org/youtube-dl/releases/latest/download/${youtubeDlFileName}`
-      const youtubeDlUrl = `https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.08.01/${youtubeDlFileName}`
-      success = await downloadFile(youtubeDlUrl, binariesPath, youtubeDlFileName)
-    }
 
     if (!hasFfmpeg) {
-      updateStatus(`⚙️ File ${ffmpegFilePath} not found, downloading...`)
-      updateStatus('⌛️ This one is kinda big, it may take a while :o')
-      const ffmpegDownloadName = `${process.platform}-${process.arch}`
+      updateStatus(`⬇️ File ${ffmpegFilePath} not found, downloading...`)
+      // updateStatus('⌛️ This one is kinda big, it may take a while :o')
+      const ffmpegDownloadName = `ffmpeg-${process.platform}-${process.arch}`
       const ffmpegUrl = `https://github.com/eugeneware/ffmpeg-static/releases/latest/download/${ffmpegDownloadName}`
       success = await downloadFile(ffmpegUrl, binariesPath, ffmpegFileName)
     }
 
-    youtubedl.setYtdlBinary(youtubeDlFilePath)
     if (success) {
       return resolve(true)
     } else {
@@ -125,7 +122,7 @@ async function downloadFile(url, downloadPath, fileName) {
   axios.defaults.adapter = require('axios/lib/adapters/http')
 
   checkAndCreateFolder(downloadPath)
-  updateStatus(`⚙️ Downloading ${url} to ${downloadPath}`)
+  updateStatus(`⬇️ Downloading ${url} to ${downloadPath}`)
 
   const downloadFilePath = path.join(downloadPath, fileName)
   const writer = fs.createWriteStream(downloadFilePath)
@@ -138,8 +135,9 @@ async function downloadFile(url, downloadPath, fileName) {
   return new Promise((resolve, reject) => {
     writer.on('finish', () => {
       updateStatus(`✅ Download finished`)
-      if (process.platform === 'linux') {
-        fs.chmodSync(downloadFilePath, 0o755)
+      if (process.platform === 'linux' || process.platform === 'darwin') {
+        updateStatus(`✅ File permissions applied`)
+        fs.chmodSync(downloadFilePath, 0o777)
       }
       resolve(path)
     })
