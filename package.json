@@ -10,7 +10,7 @@
     "transpile": "babel src --out-dir build",
     "pack": "electron-builder --dir",
     "build": "yarn transpile && electron-builder",
-    "release": "yarn transpile && electron-builder --win --linux"
+    "release": "yarn transpile && electron-builder --win --linux --mac"
   },
   "keywords": [
     "youtube-dl",
