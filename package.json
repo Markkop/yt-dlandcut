@@ -10,7 +10,8 @@
     "transpile": "babel src --out-dir build",
     "pack": "electron-builder --dir",
     "build": "yarn transpile && electron-builder",
-    "release": "yarn transpile && electron-builder --win --linux --mac"
+    "release": "yarn transpile && electron-builder --win --linux --mac",
+    "release:ci": "yarn transpile && electron-builder --win --linux"
   },
   "keywords": [
     "youtube-dl",
@@ -24,7 +25,6 @@
     "@babel/plugin-transform-runtime": "^7.22.9",
     "@babel/runtime": "^7.22.6",
     "axios": "^0.19.2",
-    "dmg-license": "^1.0.11",
     "electron-context-menu": "^1.0.0",
     "fluent-ffmpeg": "^2.1.2",
     "ytdl-core": "^4.11.5"
@@ -36,6 +36,9 @@
     "@babel/preset-env": "^7.9.0",
     "electron": "^25.4.0",
     "electron-builder": "^24.6.3"
+  },
+  "optionalDependencies": {
+    "dmg-license": "^1.0.11"
   },
   "build": {
     "appId": "com.electron.yt-dlandcut",
