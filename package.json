@@ -6,7 +6,7 @@
   "main": "build/electron/main.js",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
-    "start": "yarn transpile && electron .",
+    "start": "yarn transpile && electron . --trace-warnings",
     "transpile": "babel src --out-dir build",
     "pack": "electron-builder --dir",
     "build": "yarn transpile && electron-builder",
@@ -21,20 +21,20 @@
   "author": "Marcelo 'Mark' Kopmann <marcelokopmann@gmail.com> (https://markkop.dev)",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@babel/runtime": "^7.9.2",
-    "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/plugin-transform-runtime": "^7.22.9",
+    "@babel/runtime": "^7.22.6",
     "axios": "^0.19.2",
+    "electron-context-menu": "^1.0.0",
     "fluent-ffmpeg": "^2.1.2",
-    "youtube-dl": "^3.0.2",
-    "electron-context-menu": "^1.0.0"
+    "youtube-dl": "^3.5.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/node": "^7.8.7",
-    "@babel/cli": "^7.8.4",
     "@babel/preset-env": "^7.9.0",
-    "electron": "^8.2.3",
-    "electron-builder": "^22.5.1"
+    "electron": "^25.4.0",
+    "electron-builder": "^24.6.3"
   },
   "build": {
     "appId": "com.electron.yt-dlandcut",
