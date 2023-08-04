@@ -92,7 +92,8 @@ export function checkAndDownloadBinaries() {
     }
     if (!hasYoutubeDl) {
       updateStatus(`⚙️ File ${youtubeDlFilePath} not found, downloading...`)
-      const youtubeDlUrl = `https://github.com/ytdl-org/youtube-dl/releases/latest/download/${youtubeDlFileName}`
+      // const youtubeDlUrl = `https://github.com/ytdl-org/youtube-dl/releases/latest/download/${youtubeDlFileName}`
+      const youtubeDlUrl = `https://github.com/ytdl-org/ytdl-nightly/releases/download/2023.08.01/${youtubeDlFileName}`
       success = await downloadFile(youtubeDlUrl, binariesPath, youtubeDlFileName)
     }
 
