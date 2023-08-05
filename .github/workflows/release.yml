@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - /^v\d+\.\d+\.\d+$/
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            node-version: '10'
+            cache-path: |
+              node_modules
+              ~/.cache/electron
+              ~/.cache/electron-builder
+            env:
+              ELECTRON_CACHE: ~/.cache/electron
+              ELECTRON_BUILDER_CACHE: ~/.cache/electron-builder
+          - os: ubuntu-latest
+            node-version: '10'
+            cache-path: node_modules
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ matrix.cache-path }}
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Build and Test (macOS)
+        if: runner.os == 'macOS'
+        run: yarn release
+
+      - name: Build and Test (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          docker run --rm \
+            --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_') \
+            -v ${PWD}:/project \
+            -v ~/.cache/electron:/root/.cache/electron \
+            -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+            electronuserland/builder:wine \
+            /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release:ci --linux --win"
+
+      - name: Clean cache
+        if: runner.os == 'macOS'
+        run: rm -rf ~/.cache/electron-builder/wine
