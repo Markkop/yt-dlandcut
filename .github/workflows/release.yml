@@ -8,6 +8,10 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
     strategy:
       matrix:
         include:
@@ -20,7 +24,6 @@ jobs:
             env:
               ELECTRON_CACHE: ~/.cache/electron
               ELECTRON_BUILDER_CACHE: ~/.cache/electron-builder
-              GH_TOKEN: ${{ secrets.GH_TOKEN }}
           - os: ubuntu-latest
             node-version: '16'
             cache-path: node_modules
