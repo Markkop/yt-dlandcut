@@ -34,7 +34,7 @@
     "@babel/core": "^7.9.0",
     "@babel/node": "^7.8.7",
     "@babel/preset-env": "^7.9.0",
-    "electron": "^25.4.0",
+    "electron": "^25.8.1",
     "electron-builder": "^24.6.3"
   },
   "optionalDependencies": {
