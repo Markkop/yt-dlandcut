@@ -17,7 +17,7 @@ If that happens, let me know so I can look and see if I can fix it.
 ## Usage
 
 * Download the [latest release](https://github.com/Markkop/yt-dlandcut/releases/latest) for Linux (**.appImage**), Windows (**.exe**) or MacOS (**.dmg**) at the [releases](https://github.com/Markkop/yt-dlandcut/releases/) page.  
-* You might need to manually bypass security warnings that might appear from your OS (the app is safe, check the code it want to make sure)
+* You might need to manually bypass security warnings that might appear from your OS (the app is safe, check the code if you want to make sure)
 * The first time you run this app, it will download the `ffmpeg` file according to your OS.  
 * Once completed, you will find a folder called `yt-dlandcut` within your home folder containing the downloaded and converted files.
 If you have any problem, please [let me know](https://twitter.com/heymarkkop).
