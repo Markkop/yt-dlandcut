@@ -3,7 +3,8 @@ const assert = require('node:assert/strict')
 const path = require('node:path')
 const os = require('node:os')
 const { createHash } = require('node:crypto')
-const { mkdtemp, rm, readFile, writeFile, mkdir, readdir } = require('node:fs/promises')
+const { mkdtemp, rm, readFile, writeFile, mkdir, readdir, stat } = require('node:fs/promises')
+const { setTimeout: delay } = require('node:timers/promises')
 const { downloadVerified, ensureTools } = require('../src/tools')
 const { extractExecutables } = require('../src/zip')
 const { zipFixture } = require('./zip-fixture')
@@ -140,21 +141,27 @@ test('all supported platform manifests pin HTTPS assets, SHA256 and the full too
 })
 
 test('cancelling archive extraction closes its output before cleanup', async (t) => {
-  const { watch } = require('node:fs')
   const folder = await temporary(t)
   const archive = path.join(folder, 'tool.zip')
   const output = path.join(folder, 'output')
+  const target = path.join(output, 'ffmpeg')
   await mkdir(output)
-  await writeFile(archive, zipFixture([{ name: 'ffmpeg', body: 'x'.repeat(2 * 1024 * 1024) }]))
+  // Large enough that cancellation is observable before extraction finishes on every OS.
+  await writeFile(archive, zipFixture([{ name: 'ffmpeg', body: 'x'.repeat(8 * 1024 * 1024) }]))
   const controller = new AbortController()
-  const watcher = watch(output, () => controller.abort())
-  try {
-    await assert.rejects(
-      extractExecutables(archive, output, ['ffmpeg'], controller.signal),
-      /abort|cancel/i,
+  const pending = extractExecutables(archive, output, ['ffmpeg'], controller.signal)
+  const deadline = Date.now() + 15_000
+  let visible = false
+  while (Date.now() < deadline) {
+    visible = await stat(target).then(
+      () => true,
+      () => false,
     )
-    await rm(output, { recursive: true, force: true })
-  } finally {
-    watcher.close()
+    if (visible) break
+    await delay(5)
   }
+  assert.equal(visible, true)
+  controller.abort()
+  await assert.rejects(pending, /abort|cancel/i)
+  await rm(output, { recursive: true, force: true })
 })
