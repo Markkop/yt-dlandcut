@@ -1,65 +1,99 @@
 {
   "name": "yt-dlandcut",
-  "version": "3.0.0",
-  "description": "Download and Cut an Youtube video by its starting and ending times",
+  "version": "4.0.0",
+  "private": true,
+  "description": "Download and cut YouTube videos or export clips as MP3",
   "repository": "github:markkop/yt-dlandcut",
-  "main": "build/electron/main.js",
+  "main": "src/electron/main.js",
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "packageManager": "npm@11.19.1",
   "scripts": {
-    "postinstall": "electron-builder install-app-deps",
-    "start": "export DEV=true && yarn transpile && electron . --trace-warnings",
-    "transpile": "babel src --out-dir build",
-    "pack": "electron-builder --dir",
-    "build": "yarn transpile && electron-builder",
-    "release": "yarn transpile && electron-builder --win --linux --mac",
-    "release:ci": "yarn transpile && electron-builder --win --linux"
+    "start": "electron .",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "node --test test/*.test.js",
+    "check": "npm run lint && npm run format:check && npm test",
+    "tools:update": "node scripts/update-tools.js",
+    "pack": "electron-builder --dir --publish never",
+    "build": "electron-builder --publish never",
+    "release": "electron-builder --publish always",
+    "test:media": "node scripts/smoke-media.js"
   },
   "keywords": [
-    "youtube-dl",
+    "yt-dlp",
     "ffmpeg",
     "electron",
-    "travisci"
+    "youtube",
+    "video"
   ],
   "author": "Marcelo 'Mark' Kopmann <marcelokopmann@gmail.com> (https://markkop.dev)",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@babel/plugin-transform-runtime": "^7.22.9",
-    "@babel/runtime": "^7.22.6",
-    "axios": "^0.19.2",
-    "electron-context-menu": "^1.0.0",
-    "fluent-ffmpeg": "^2.1.2",
-    "ytdl-core": "^4.11.5"
+    "yauzl": "3.4.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "@babel/node": "^7.8.7",
-    "@babel/preset-env": "^7.9.0",
-    "electron": "^25.4.0",
-    "electron-builder": "^24.6.3"
-  },
-  "optionalDependencies": {
-    "dmg-license": "^1.0.11"
+    "@eslint/js": "10.0.1",
+    "electron": "45.0.0",
+    "electron-builder": "26.18.0",
+    "eslint": "10.13.0",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "jsdom": "30.1.3"
   },
   "build": {
     "appId": "com.electron.yt-dlandcut",
+    "productName": "YouTube - Download and Cut",
+    "asar": true,
     "files": [
-      "build/**/*",
-      "public/*",
-      "package.json"
+      "src/**/*",
+      "public/**/*",
+      "package.json",
+      "tools-manifest.json",
+      "LICENSE",
+      "THIRD_PARTY_NOTICES.md"
     ],
+    "artifactName": "${name}-${version}-${os}-${arch}.${ext}",
     "linux": {
-      "target": "appImage",
+      "target": [
+        "AppImage"
+      ],
       "category": "Utility",
-      "icon": "public/256x256.png"
+      "icon": "public/256x256.png",
+      "syncDesktopName": true
     },
     "win": {
-      "target": "portable",
+      "target": [
+        "portable"
+      ],
       "icon": "public/256x256.ico"
     },
     "mac": {
-      "target": "dmg",
-      "icon": "public/256x256.icns"
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.video",
+      "icon": "public/256x256.icns",
+      "hardenedRuntime": true
     },
-    "publish": "github"
-  }
+    "appImage": {
+      "executableArgs": []
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "Markkop",
+      "repo": "yt-dlandcut",
+      "releaseType": "draft"
+    },
+    "electronFuses": {
+      "runAsNode": false,
+      "enableNodeOptionsEnvironmentVariable": false,
+      "enableNodeCliInspectArguments": false,
+      "enableEmbeddedAsarIntegrityValidation": true,
+      "onlyLoadAppFromAsar": true
+    }
+  },
+  "desktopName": "com.electron.yt-dlandcut.desktop"
 }

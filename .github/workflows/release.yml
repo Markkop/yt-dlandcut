@@ -1,69 +1,62 @@
-name: CI
+name: Package v4
 
 on:
   push:
-    branches-ignore:
-      - /^v\d+\.\d+\.\d+$/
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: package-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-
-    env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
+  package:
+    permissions:
+      contents: write
     strategy:
+      fail-fast: false
       matrix:
         include:
-          - os: macos-latest
-            node-version: '16'
-            cache-path: |
-              node_modules
-              ~/.cache/electron
-              ~/.cache/electron-builder
-            env:
-              ELECTRON_CACHE: ~/.cache/electron
-              ELECTRON_BUILDER_CACHE: ~/.cache/electron-builder
           - os: ubuntu-latest
-            node-version: '16'
-            cache-path: node_modules
-
+            arch: x64
+          - os: windows-latest
+            arch: x64
+          - os: macos-latest
+            arch: arm64
+          - os: macos-15-intel
+            arch: x64
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Validate release tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: node -e "if (process.env.GITHUB_REF_NAME !== 'v' + require('./package.json').version) process.exit(1)"
+      - run: npm ci
+      - run: npm run check
+      - run: npm audit --audit-level=low
+      - run: npm run test:media
+      - name: Build installers without publishing
+        if: github.event_name == 'workflow_dispatch'
+        run: npm run build -- --${{ matrix.arch }}
+      - name: Upload installers to a draft release
+        if: startsWith(github.ref, 'refs/tags/')
+        run: npm run release -- --${{ matrix.arch }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          path: ${{ matrix.cache-path }}
-          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-build-
-            ${{ runner.OS }}-
-
-      - name: Install Dependencies
-        run: yarn install
-
-      - name: Build and Test (macOS)
-        if: runner.os == 'macOS'
-        run: yarn release
-
-      - name: Build and Test (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          docker run --rm \
-            --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_') \
-            -e GH_TOKEN=${{ secrets.GH_TOKEN }} \
-            -v ${PWD}:/project \
-            -v ~/.cache/electron:/root/.cache/electron \
-            -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-            electronuserland/builder:wine \
-            /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release:ci --linux --win"
-
-      - name: Clean cache
-        if: runner.os == 'macOS'
-        run: rm -rf ~/.cache/electron-builder/wine
+          name: yt-dlandcut-${{ runner.os }}-${{ matrix.arch }}
+          if-no-files-found: error
+          path: |
+            dist/*.AppImage
+            dist/*.exe
+            dist/*.dmg
+            dist/*.blockmap
+            dist/*.yml

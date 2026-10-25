@@ -1,51 +1,141 @@
-// Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron')
-const contextMenu = require('electron-context-menu')
-const path = require('path')
+const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron')
+const path = require('node:path')
+const { pathToFileURL } = require('node:url')
+const { mkdir } = require('node:fs/promises')
+const { downloadAndCut } = require('../index')
+const { getSettings } = require('../settings')
+const { checkUpdates } = require('../helpers')
+const { stopChildren } = require('../process')
+const { assertTrustedSender, externalLink } = require('./security')
 
-contextMenu()
-
-function createWindow() {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 600,
-    height: 600,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: false,
-      nodeIntegration: true,
-      sandbox: false,
-    },
-  })
-
-  // and load the index.html of the app.
-  mainWindow.loadFile('public/index.html')
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+if (!app.requestSingleInstanceLock()) {
+  app.quit()
+} else {
+  startApplication()
 }
 
-// Electron will default this to true soon, but we have to modify
-// it to avoid a annoying warn message
-app.allowRendererProcessReuse = true
+function startApplication() {
+  const pagePath = path.join(__dirname, '../../public/index.html')
+  const pageUrl = pathToFileURL(pagePath).href
+  let mainWindow
+  let activeJob
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(createWindow)
+  function status(message) {
+    if (mainWindow && !mainWindow.isDestroyed() && !mainWindow.webContents.isDestroyed())
+      mainWindow.webContents.send('app:status', String(message).slice(0, 4000))
+  }
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') app.quit()
-})
+  function handle(channel, handler) {
+    ipcMain.handle(channel, async (event, ...args) => {
+      assertTrustedSender(event, mainWindow, pageUrl)
+      try {
+        return { ok: true, value: await handler(...args) }
+      } catch (error) {
+        return {
+          ok: false,
+          error: activeJob?.signal.aborted
+            ? 'Operation cancelled.'
+            : error.message || 'Operation failed.',
+        }
+      }
+    })
+  }
 
-app.on('activate', function () {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) createWindow()
-})
+  function registerHandlers() {
+    handle('app:download', async (request) => {
+      if (activeJob) throw new Error('A download is already running.')
+      const controller = new AbortController()
+      activeJob = controller
+      try {
+        return await downloadAndCut(request, {
+          ...getSettings(app),
+          status,
+          signal: controller.signal,
+          openPath: (file) => shell.openPath(file),
+        })
+      } catch (error) {
+        if (controller.signal.aborted) throw new Error('Operation cancelled.', { cause: error })
+        throw error
+      } finally {
+        activeJob = undefined
+      }
+    })
+    handle('app:cancel', () => {
+      activeJob?.abort()
+    })
+    handle('app:open-output', async () => {
+      const { basePath } = getSettings(app)
+      await mkdir(basePath, { recursive: true })
+      const error = await shell.openPath(basePath)
+      if (error) throw new Error(error)
+    })
+    handle('app:open-link', (key) => shell.openExternal(externalLink(key)))
+    handle('app:check-updates', async () => {
+      try {
+        return await checkUpdates(app.getVersion())
+      } catch {
+        status('⚠️ Could not check for updates. You can check Releases from the Source Code link.')
+        return null
+      }
+    })
+  }
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+  function createWindow() {
+    mainWindow = new BrowserWindow({
+      width: 600,
+      height: 600,
+      minWidth: 480,
+      minHeight: 500,
+      webPreferences: {
+        preload: path.join(__dirname, 'preload.js'),
+        contextIsolation: true,
+        nodeIntegration: false,
+        sandbox: true,
+        webSecurity: true,
+        webviewTag: false,
+      },
+    })
+    const contents = mainWindow.webContents
+    contents.setWindowOpenHandler(() => ({ action: 'deny' }))
+    contents.on('will-navigate', (event) => event.preventDefault())
+    contents.on('will-attach-webview', (event) => event.preventDefault())
+    contents.session.setPermissionRequestHandler((_contents, _permission, callback) =>
+      callback(false),
+    )
+    contents.session.setPermissionCheckHandler(() => false)
+    mainWindow.on('closed', () => {
+      activeJob?.abort()
+      mainWindow = undefined
+    })
+    mainWindow.loadFile(pagePath).catch((error) => {
+      dialog.showErrorBox('Unable to open application', error.message)
+      app.quit()
+    })
+  }
+
+  app
+    .whenReady()
+    .then(() => {
+      registerHandlers()
+      createWindow()
+    })
+    .catch((error) => {
+      dialog.showErrorBox('Unable to start application', error.message)
+      app.quit()
+    })
+  app.on('second-instance', () => {
+    if (!mainWindow || mainWindow.isDestroyed()) return
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.focus()
+  })
+  app.on('before-quit', () => {
+    activeJob?.abort()
+    stopChildren()
+  })
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit()
+  })
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
+}

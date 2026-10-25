@@ -1,5 +1,9 @@
 /node_modules
 /dist
 /build
-.DS_Store
+/coverage
 /yt-dlandcut
+.DS_Store
+*.log
+.env
+.env.*

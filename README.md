@@ -1,63 +1,87 @@
-# <img alt="Demo PrintsCreen" src="public/256x256.png" width="26"> Youtube - Download and Cut
+# <img alt="App icon" src="public/256x256.png" width="26"> YouTube - Download and Cut v4
 
-![https://img.shields.io/badge/repo%20status-maintenance-yellow](https://img.shields.io/badge/repo%20status-maintenance-yellow)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/markkop/yt-dlandcut)
+Download a YouTube video, select a time range, and save an MP4 or MP3 clip. The original desktop interface and output folder are preserved.
 
-<kbd>
-  <img border="1" alt="Demo PrintsCreen" src="https://i.imgur.com/hx48SzZ.gif" >
-</kbd>
-
-## About
-
-This is one of my first side projects as a developer from a few years ago.  
-The goal was to make it easy for people to download and cut Youtube videos so they could share them.  
-**Since it depends on libraries that get videos from YouTube, this software may stop working at any time.**  
-If that happens, let me know so I can look and see if I can fix it.
+![GitHub release](https://img.shields.io/github/v/release/Markkop/yt-dlandcut)
 
 ## Usage
 
-* Download the [latest release](https://github.com/Markkop/yt-dlandcut/releases/latest) for Linux (**.appImage**), Windows (**.exe**) or MacOS (**.dmg**) at the [releases](https://github.com/Markkop/yt-dlandcut/releases/) page.  
-* You might need to manually bypass security warnings that might appear from your OS (the app is safe, check the code it want to make sure)
-* The first time you run this app, it will download the `ffmpeg` file according to your OS.  
-* Once completed, you will find a folder called `yt-dlandcut` within your home folder containing the downloaded and converted files.
-If you have any problem, please [let me know](https://twitter.com/heymarkkop).
+1. Download the appropriate Linux **AppImage**, Windows **portable EXE**, or macOS **DMG** from [Releases](https://github.com/Markkop/yt-dlandcut/releases).
+2. Enter a video URL and starting/ending times in **HH:MM:SS** format. The ending time must be later and within the video duration.
+3. Optionally select **Convert to MP3**, **Download again**, **Open file on finish**, or enter a custom filename.
+4. Click **Submit**. The first job downloads and verifies yt-dlp, Deno, FFmpeg, and FFprobe. This needs an internet connection and may take a few minutes. Later jobs reuse the verified tools.
+5. Find clips in `~/yt-dlandcut/<video-title>-<video-id>/` or click **Open output folder**. A completed `source.mp4` is reused unless **Download again** is checked. **Cancel** stops the current job.
 
-## Options
+Normal, shortened, Shorts, live replay, embed, and mobile YouTube video links are accepted. Ongoing live streams, upcoming streams, playlists, and channels are rejected. Only download content you have permission to use.
 
-- **Youtube url\***: normal or shortened url
-- **Starting and ending times\***: in HH:MM:SS format
-- **Convert to mp3**: if the cut should also be converted to audio
-- **Download again**: to not skip download if file exists
-- **Open on finish**: opens cut video/audio
-- **Custom file name**: instead of video's title
+YouTube can change its extraction requirements at any time. Private, age-restricted, region-restricted, or bot-challenged videos may fail. This version does not import browser cookies or bypass account restrictions. Check the progress log and try **Download again** if a cached source is damaged.
+
+The tool cache lives in Electron's per-user application-data directory, separate from your downloaded videos. v2 and v3.0.0 downloads are left in place; v4 uses video IDs in folder names to prevent different videos with the same title sharing a cached download. MP3 export creates an audio clip directly rather than an intermediate cut video.
 
 ## Development
 
-Make sure to have `node` and `yarn` installed.  
-Run `yarn` to install dependencies and `yarn start` to transpile and run the code.  
-To create a package based on your current operating system and build options in `package.json`, simply run `yarn build`. The resulting package will be located in the `dist` folder.
+Use **Node.js 24 LTS, version 24.15 or newer**, and **npm 11**. `.nvmrc` selects the Node 24 line. No Babel compilation is needed.
 
-## Deploy/Release
+```sh
+npm ci
+npm run check
+npm start
+```
 
-It looks like `electron-builder` already does a lot when [releasing](https://www.electron.build/configuration/publish) a new version of an Electron app to github.
+`npm run check` runs ESLint, formatting checks, and the Node test suite. Tests cover input and IPC validation, download/conversion failures, cache repair, checksum enforcement, archive attacks, process cancellation, and renderer form behavior without launching a browser or Electron.
 
-The first option to build and release this project's binaries is by running the `package.json` script command `yarn release`.  
-Electron Builder will know that it should also deploy after building because of this script command name `release` and it will look for a `GH_TOKEN` environment variable to publish to GitHub as a draft release with the package version.
-You can set this environment variable by adding `export GH_TOKEN=CHANGE_THIS` to `~/.zshrc` or `~/.bashrc` file and sourcing it with `source ~./zshrc` after [creating a token](https://github.com/settings/tokens/new).
+```sh
+npm run test:media
+```
 
-However, the [recommend way](https://www.electron.build/configuration/publish#recommended-github-releases-workflow) is by using a Continuous Integration service, Github Actions in this case.
-First, a collaborator have to [draft a new release](https://help.github.com/articles/creating-releases/) with the `package.json` version. Then, after every push, GH Actions will run `yarn build`, building the files and providing them as assets in the drafted Github's release.
+The media smoke test downloads the pinned tools into the OS temporary directory, prints their versions, generates a four-second test video, exports two-second MP4/MP3 clips, and inspects them with FFprobe. It does not contact YouTube. The temporary media is removed afterward; the temporary tool cache can be reused.
 
-For this to happen, it's required to have `"build": { "publish": "github" }` in `package.json` and `GH_TOKEN` as environment variable inside TravisCI dashboard's build settings.  
-Then after a passing build, a collaborator can simply publish it.  
+```sh
+npm run pack    # unpacked application in dist/, no publishing
+npm run build   # installer for the current OS, no publishing
+```
 
-It's also possible to deploy using [provider: releases](https://docs.travis-ci.com/user/deployment/releases/) deploy configuration.  
-Here are some examples for Travis: [this](https://github.com/lane-c-wagner/electron-ci-boilerplate/blob/master/.travis.yml) and [this](https://github.com/gontarczyk-artur/electron-travis-poc/blob/master/.travis.yml).
+Desktop launch and installer builds require a graphical/native environment appropriate for Electron. Build each OS on its native runner. Release targets are Linux x64, Windows x64, macOS Intel, and macOS Apple Silicon. The tool manifest also includes Linux/Windows ARM64; those additional targets need their own native packaging and desktop checks before being offered as releases.
 
-Note: I used to used TravisCI, but ended up converting the yml to Github Action using ChatGPT.
+The Linux AppImage launcher does not disable the Chromium sandbox by default. It adds `--no-sandbox` only when user namespaces are unavailable, so normal desktops keep the sandbox. The empty `appImage.executableArgs` setting preserves that behavior.
 
-### TL;DR:
+## Dependencies and security
 
-- Create a draft release on GitHub
-- Run the `yarn release` command and ensure that the GH_TOKEN environment variable is exported to the current shell.
-- Or you can have Github Action deploy it automatically when you push a commit.
+The application stays on Electron with plain JavaScript, HTML, and CSS. Privileged operations live in the main process behind a narrow, validated IPC bridge. The renderer is sandboxed, context-isolated, and has no Node access. Scripts, styles, and the Roboto font are local; the renderer's CSP blocks network connections. Files open through Electron's native API, and tools run with argument arrays instead of shell commands.
+
+`package-lock.json` pins the npm dependency tree. `tools-manifest.json` separately pins HTTPS URLs and SHA256 checksums for first-run executables. Downloads are verified before installation, selected executables are extracted to fixed filenames, and incomplete installs are cleaned. Executable hashes are rechecked before a job. Both FFmpeg and FFprobe share a tool directory so yt-dlp can discover them. Downloaded tools are not self-updated at runtime.
+
+To deliberately refresh external tools:
+
+```sh
+npm run tools:update
+npm run check
+npm run test:media
+```
+
+Review the manifest's versions, upstream URLs, checksums, and platform mappings; test live YouTube downloads and native installers before releasing. The manifest updater reads official yt-dlp/Deno releases, stable FFmpeg builds for macOS/Linux from Martin Riedl, and dated stable-branch Windows FFmpeg builds from BtbN. Upstream binary hosting is a trust dependency. A checksum pins the reviewed bytes; it does not independently prove the publisher's identity.
+
+Dependabot checks npm packages and Actions weekly. Its dependency PRs should pass checks before merging. Tool updates require the deliberate manifest update above.
+
+## Releasing
+
+The [release review](docs/v4-review.md) records completed work, verification, and remaining launch checks.
+
+- Pushes and pull requests run checks on Linux, Windows, and macOS without publishing.
+- Manually running **Package v4** builds installers and uploads workflow artifacts without publishing to Releases.
+- A `v<package.json version>` tag, for example `v4.0.0`, runs checks and media smoke tests, builds native installers, and uploads them to a **draft** GitHub release using the workflow's `GITHUB_TOKEN`. Publishing that draft is a separate maintainer action. The existing `v3.0.0` tag is the 2023 release and must not be reused.
+- Release tag names must exactly match `package.json`. Artifact filenames include the OS and architecture.
+
+Local publishing is explicit:
+
+```sh
+npm run release
+```
+
+That command requires `GH_TOKEN` in the environment and uploads to a draft release. Do not put tokens in files committed to this repository. Ordinary `pack` and `build` commands always pass `--publish never`.
+
+For a public macOS release, configure Developer ID signing and notarization using [electron-builder v26's signing documentation](https://www.electron.build/v26/docs/features/code-signing/). Windows signing should also be configured for public distribution. The current workflow has no signing credentials configured; generated artifacts must be treated as release candidates until signing and clean-machine checks are complete. Do not encourage users to disable OS security controls.
+
+## License
+
+GPL-3.0-or-later; see [LICENSE](LICENSE). Downloaded tools and the bundled font have their own notices; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

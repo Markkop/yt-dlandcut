@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('./fonts/roboto-latin-300-normal.woff2') format('woff2');
+}
+
 body {
   --color1: #ffe74c;
   --color2: #ff5964;
@@ -242,4 +250,33 @@ footer {
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
+}
+
+/* Keep progress readable and keyboard controls visible. */
+#status p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.status-container {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color6);
+  outline-offset: 2px;
+}
+
+input:disabled {
+  cursor: wait;
+}
+
+.tooltip:focus-within .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+[hidden] {
+  display: none !important;
 }

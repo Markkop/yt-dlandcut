@@ -1,0 +1,217 @@
+{
+  "updatedAt": "2026-10-25",
+  "platforms": {
+    "linux-x64": [
+      {
+        "version": "2026.10.21",
+        "url": "https://github.com/yt-dlp/yt-dlp/releases/download/2026.10.21/yt-dlp_linux",
+        "sha256": "d8bd33fca9d5b23bd5b9952b3fca36db5c46331933fda9f598a3da14ce2c243f",
+        "archive": false,
+        "executables": {
+          "ytdlp": "yt-dlp"
+        }
+      },
+      {
+        "version": "v2.9.8",
+        "url": "https://github.com/denoland/deno/releases/download/v2.9.8/deno-x86_64-unknown-linux-gnu.zip",
+        "sha256": "e890975bc2549807bbcc0b584ffafda72cc7c93349dd99c80483dd784f6c4609",
+        "archive": true,
+        "executables": {
+          "deno": "deno"
+        }
+      },
+      {
+        "version": "9.0.2",
+        "url": "https://ffmpeg.martin-riedl.de/download/linux/amd64/1789931100_9.0.2/ffmpeg.zip",
+        "sha256": "fa8ecf4abbd290d98f7d188b8649cc6b391ae209a98452be955a15aab1909d7f",
+        "archive": true,
+        "executables": {
+          "ffmpeg": "ffmpeg"
+        }
+      },
+      {
+        "version": "9.0.2",
+        "url": "https://ffmpeg.martin-riedl.de/download/linux/amd64/1789931100_9.0.2/ffprobe.zip",
+        "sha256": "3f428c49070be3d24ec338602b76d412e401ffcb8a5641ef0e729181a232fc32",
+        "archive": true,
+        "executables": {
+          "ffprobe": "ffprobe"
+        }
+      }
+    ],
+    "linux-arm64": [
+      {
+        "version": "2026.10.21",
+        "url": "https://github.com/yt-dlp/yt-dlp/releases/download/2026.10.21/yt-dlp_linux_aarch64",
+        "sha256": "e137c2171b0b8ef648e6136e86aa70c65923e93e434f01c93901d64744b190aa",
+        "archive": false,
+        "executables": {
+          "ytdlp": "yt-dlp"
+        }
+      },
+      {
+        "version": "v2.9.8",
+        "url": "https://github.com/denoland/deno/releases/download/v2.9.8/deno-aarch64-unknown-linux-gnu.zip",
+        "sha256": "d49596c20b9788cf8f5d8ddf644103d4bde56ed239753f0bdb92ba9361d51905",
+        "archive": true,
+        "executables": {
+          "deno": "deno"
+        }
+      },
+      {
+        "version": "9.0.2",
+        "url": "https://ffmpeg.martin-riedl.de/download/linux/arm64/1789931697_9.0.2/ffmpeg.zip",
+        "sha256": "93a76ae90db5474eecdf951a729857c64f3de23567228d6a7d5e6e8e3cd1021b",
+        "archive": true,
+        "executables": {
+          "ffmpeg": "ffmpeg"
+        }
+      },
+      {
+        "version": "9.0.2",
+        "url": "https://ffmpeg.martin-riedl.de/download/linux/arm64/1789931697_9.0.2/ffprobe.zip",
+        "sha256": "bcbe80fb741c180083327afaf5434812e006b33cacde2016b9aeaf6936128330",
+        "archive": true,
+        "executables": {
+          "ffprobe": "ffprobe"
+        }
+      }
+    ],
+    "darwin-x64": [
+      {
+        "version": "2026.10.21",
+        "url": "https://github.com/yt-dlp/yt-dlp/releases/download/2026.10.21/yt-dlp_macos",
+        "sha256": "7a6fe71d7d680f1fb0ac18d4949873d77db2859e90017c0f44bd94b23be4ee40",
+        "archive": false,
+        "executables": {
+          "ytdlp": "yt-dlp"
+        }
+      },
+      {
+        "version": "v2.9.8",
+        "url": "https://github.com/denoland/deno/releases/download/v2.9.8/deno-x86_64-apple-darwin.zip",
+        "sha256": "4b2f5edd2639b7470f034238b321d7002d8dfb4726d8558f52c17afac370eb2c",
+        "archive": true,
+        "executables": {
+          "deno": "deno"
+        }
+      },
+      {
+        "version": "9.0.2",
+        "url": "https://ffmpeg.martin-riedl.de/download/macos/amd64/1789931006_9.0.2/ffmpeg.zip",
+        "sha256": "7c6b4125b191cbf773832dc51f424cf2b6bb7da43007d1e066f95909e47cacd4",
+        "archive": true,
+        "executables": {
+          "ffmpeg": "ffmpeg"
+        }
+      },
+      {
+        "version": "9.0.2",
+        "url": "https://ffmpeg.martin-riedl.de/download/macos/amd64/1789931006_9.0.2/ffprobe.zip",
+        "sha256": "2322438ed2f6319a691291b247d09c69dcaa3a982460d1f269a7e1af335cfdfd",
+        "archive": true,
+        "executables": {
+          "ffprobe": "ffprobe"
+        }
+      }
+    ],
+    "darwin-arm64": [
+      {
+        "version": "2026.10.21",
+        "url": "https://github.com/yt-dlp/yt-dlp/releases/download/2026.10.21/yt-dlp_macos",
+        "sha256": "7a6fe71d7d680f1fb0ac18d4949873d77db2859e90017c0f44bd94b23be4ee40",
+        "archive": false,
+        "executables": {
+          "ytdlp": "yt-dlp"
+        }
+      },
+      {
+        "version": "v2.9.8",
+        "url": "https://github.com/denoland/deno/releases/download/v2.9.8/deno-aarch64-apple-darwin.zip",
+        "sha256": "9f0bf660393da2eaff044cdc7444cb08c73f235849b61d224d825a194ce7c98e",
+        "archive": true,
+        "executables": {
+          "deno": "deno"
+        }
+      },
+      {
+        "version": "9.0.2",
+        "url": "https://ffmpeg.martin-riedl.de/download/macos/arm64/1789931890_9.0.2/ffmpeg.zip",
+        "sha256": "c8ed4c4e6978a03c485edbfe4e0a5dc2380f8a30bba5150531b31b094492d924",
+        "archive": true,
+        "executables": {
+          "ffmpeg": "ffmpeg"
+        }
+      },
+      {
+        "version": "9.0.2",
+        "url": "https://ffmpeg.martin-riedl.de/download/macos/arm64/1789931890_9.0.2/ffprobe.zip",
+        "sha256": "fcbe839537485eaee7a7a8bc5cbc0f90d53617e80943e8a5b2e31cb851197ea6",
+        "archive": true,
+        "executables": {
+          "ffprobe": "ffprobe"
+        }
+      }
+    ],
+    "win32-x64": [
+      {
+        "version": "2026.10.21",
+        "url": "https://github.com/yt-dlp/yt-dlp/releases/download/2026.10.21/yt-dlp.exe",
+        "sha256": "33121d192d706e62f684a06f80918e3f3a8ba52ac3a65213b6951c39c7d9f555",
+        "archive": false,
+        "executables": {
+          "ytdlp": "yt-dlp.exe"
+        }
+      },
+      {
+        "version": "v2.9.8",
+        "url": "https://github.com/denoland/deno/releases/download/v2.9.8/deno-x86_64-pc-windows-msvc.zip",
+        "sha256": "cba84b26e0df5ae7f74fc66b86a95b866872a86292ebd84fa1e959927edd93bf",
+        "archive": true,
+        "executables": {
+          "deno": "deno.exe"
+        }
+      },
+      {
+        "version": "autobuild-2026-10-25-13-00",
+        "url": "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-10-25-13-00/ffmpeg-n9.0.2-36-g6882969ce9-win64-gpl-9.0.zip",
+        "sha256": "941603e8e99cf92309a3faaf156479438c41e738d007dbef3e484204614cb156",
+        "archive": true,
+        "executables": {
+          "ffmpeg": "ffmpeg.exe",
+          "ffprobe": "ffprobe.exe"
+        }
+      }
+    ],
+    "win32-arm64": [
+      {
+        "version": "2026.10.21",
+        "url": "https://github.com/yt-dlp/yt-dlp/releases/download/2026.10.21/yt-dlp_arm64.exe",
+        "sha256": "1380a9f105302764e6a5d383c2f07238ae242f0f4fbf3414aea00e56619a79b3",
+        "archive": false,
+        "executables": {
+          "ytdlp": "yt-dlp.exe"
+        }
+      },
+      {
+        "version": "v2.9.8",
+        "url": "https://github.com/denoland/deno/releases/download/v2.9.8/deno-aarch64-pc-windows-msvc.zip",
+        "sha256": "b413b92b735b50c198e8fe3b85af1aa50e29d5f72e229aab701d132286e14cef",
+        "archive": true,
+        "executables": {
+          "deno": "deno.exe"
+        }
+      },
+      {
+        "version": "autobuild-2026-10-25-13-00",
+        "url": "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-10-25-13-00/ffmpeg-n9.0.2-36-g6882969ce9-winarm64-gpl-9.0.zip",
+        "sha256": "a70493529c45e2d2ccd1d406ad0896bd83dd7eafabed54e48b31bddd2dc14636",
+        "archive": true,
+        "executables": {
+          "ffmpeg": "ffmpeg.exe",
+          "ffprobe": "ffprobe.exe"
+        }
+      }
+    ]
+  }
+}

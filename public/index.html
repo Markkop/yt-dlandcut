@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://twemoji.maxcdn.com"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'"
     />
-    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="./index.css" />
     <title>YouTube - Download and Cut</title>
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
   </head>
 
   <body>
@@ -31,14 +30,14 @@
     <div class="content">
       <section class="form-container">
         <form>
-          <label for="url">Youtube URL</label>
+          <label for="url">YouTube URL</label>
           <input
             type="text"
             name="url"
             id="url"
             placeholder="https://www.youtube.com/watch?v=N9qjR6teBNw"
-            pattern="^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.*"
-            title="Youtube url"
+            maxlength="2048"
+            title="YouTube video URL"
             required
           />
           <div class="times-and-options">
@@ -51,7 +50,8 @@
                   name="startTime"
                   id="startTime"
                   placeholder="00:00:20"
-                  pattern="\d{2}:\d{2}:\d{2}"
+                  pattern="[0-9]{2}:[0-5][0-9]:[0-5][0-9]"
+                  inputmode="numeric"
                   title="HH:MM:SS"
                   maxlength="8"
                   required
@@ -65,7 +65,8 @@
                   name="endTime"
                   id="endTime"
                   placeholder="00:00:22"
-                  pattern="\d{2}:\d{2}:\d{2}"
+                  pattern="[0-9]{2}:[0-5][0-9]:[0-5][0-9]"
+                  inputmode="numeric"
                   title="HH:MM:SS"
                   maxlength="8"
                   required
@@ -74,11 +75,16 @@
             </div>
             <div class="options-container">
               <div class="checkbox-option tooltip">
-                <label for="mp3">Download again</label>
-                <input type="checkbox" name="overwriteDownload" id="overwriteDownload" value="Yes" />
+                <label for="overwriteDownload">Download again</label>
+                <input
+                  type="checkbox"
+                  name="overwriteDownload"
+                  id="overwriteDownload"
+                  value="Yes"
+                />
                 <span class="tooltiptext"
-                  >Check this option if you have already downloaded this video, but want to download it
-                  again</span
+                  >Check this option if you have already downloaded this video, but want to download
+                  it again</span
                 >
               </div>
               <div class="checkbox-option">
@@ -93,20 +99,33 @@
           </div>
           <div class="filename-container">
             <label for="filename">Give it a name: </label>
-            <input type="text" name="filename" id="filename" placeholder="or leave it empty" />
+            <input
+              type="text"
+              name="filename"
+              id="filename"
+              maxlength="200"
+              placeholder="or leave it empty"
+            />
           </div>
           <input type="submit" value="Submit" />
+          <button type="button" id="cancel" hidden>Cancel</button>
           <input type="button" value="Open output folder" class="open-folder-button" />
         </form>
       </section>
       <section class="status-container">
-        <div id="status"></div>
+        <div
+          id="status"
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions text"
+          aria-label="Download progress"
+        ></div>
       </section>
       <footer>
         <div class="footer-container">
           <div class="footer-text">
             <p class="myblog">Made by Marcelo "Mark" Kopmann</p>
-            <p>powered by Electron, youtube-dl and ffmpeg</p>
+            <p>powered by Electron, yt-dlp and FFmpeg</p>
           </div>
           <div class="socials">
             <svg

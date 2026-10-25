@@ -1,165 +1,129 @@
-import fs from 'fs'
-import { shell } from 'electron'
-import { version as currentVersion } from '../package.json'
-import axios from 'axios'
-import os from 'os'
-import { exec } from 'child_process'
+const { mkdir } = require('node:fs/promises')
 
-/**
- * Check if a detected version is newer than current
- * TO DO: refactor this, perhaps recursively?
- * @param { String } curr
- * @param { String } detected
- * @returns { Boolean } true if detected is newer
- */
-function isNewVersion(curr, detected) {
-  const [currMajor, currMinor, currPatch] = curr.split('.').map(Number)
-  const [detectedMajor, detectedMinor, detectedPatch] = detected.split('.').map(Number)
+function parseTime(value) {
+  if (typeof value !== 'string' || !/^\d{2}:[0-5]\d:[0-5]\d$/.test(value)) {
+    throw new Error('Enter times as HH:MM:SS, with minutes and seconds between 00 and 59.')
+  }
+  const [hours, minutes, seconds] = value.split(':').map(Number)
+  return hours * 3600 + minutes * 60 + seconds
+}
 
-  if (detectedMajor === currMajor) {
-    if (detectedMinor === currMinor) {
-      if (detectedPatch === currPatch) {
-        return false
-      } else {
-        return detectedMinor > currMinor
-      }
-    } else {
-      return detectedMinor > currMinor
-    }
-  } else {
-    return detectedMajor > currMajor
+function getDuration(startTime, endTime) {
+  const duration = parseTime(endTime) - parseTime(startTime)
+  if (duration <= 0) throw new Error('Ending time must be after starting time.')
+  return duration
+}
+
+function normalizeYoutubeUrl(value) {
+  if (typeof value !== 'string' || value.length > 2048)
+    throw new Error('Enter a YouTube video URL.')
+  let url
+  try {
+    url = new URL(/^https?:\/\//i.test(value.trim()) ? value.trim() : `https://${value.trim()}`)
+  } catch {
+    throw new Error('Enter a valid YouTube video URL.')
+  }
+  if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.port) {
+    throw new Error('Enter a valid YouTube video URL.')
+  }
+  const host = url.hostname.toLowerCase()
+  let id
+  if (host === 'youtu.be') id = url.pathname.slice(1)
+  else if (
+    ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com'].includes(host)
+  ) {
+    if (url.pathname === '/watch') id = url.searchParams.get('v')
+    else id = /^\/(?:shorts|live|embed)\/([^/]+)\/?$/.exec(url.pathname)?.[1]
+  }
+  if (!/^[A-Za-z0-9_-]{11}$/.test(id || ''))
+    throw new Error('Enter a YouTube video URL, not a playlist or channel.')
+  return `https://www.youtube.com/watch?v=${id}`
+}
+
+function validateRequest(request) {
+  if (!request || typeof request !== 'object' || Array.isArray(request))
+    throw new Error('Invalid download request.')
+  const youtubeUrl = normalizeYoutubeUrl(request.youtubeUrl)
+  const startTime = request.startTime
+  const endTime = request.endTime
+  const duration = getDuration(startTime, endTime)
+  const options = request.options ?? {}
+  if (typeof options !== 'object' || options === null || Array.isArray(options))
+    throw new Error('Invalid options.')
+  for (const key of ['toMp3', 'openAtFinish', 'overwriteDownload']) {
+    if (options[key] !== undefined && typeof options[key] !== 'boolean')
+      throw new Error(`Invalid option: ${key}.`)
+  }
+  if (
+    options.customFileName !== undefined &&
+    (typeof options.customFileName !== 'string' || options.customFileName.length > 200)
+  ) {
+    throw new Error('Custom file name must be at most 200 characters.')
+  }
+  const customFileName = options.customFileName?.trim() || ''
+  if (customFileName && !slugify(customFileName))
+    throw new Error('Custom file name needs letters or numbers.')
+  return {
+    youtubeUrl,
+    startTime,
+    endTime,
+    duration,
+    options: {
+      customFileName,
+      toMp3: options.toMp3 === true,
+      openAtFinish: options.openAtFinish === true,
+      overwriteDownload: options.overwriteDownload === true,
+    },
   }
 }
 
-/**
- * Check if there's a new version released
- * @returns { Promise<Boolean> } true if there is
- */
-export function checkUpdates() {
-  return new Promise(async (resolve, reject) => {
-    try {
-      axios.defaults.adapter = require('axios/lib/adapters/http')
-      const infoUrl = 'https://github.com/Markkop/yt-dlandcut/releases/latest/download/latest-linux.yml'
-      const response = await axios.get(infoUrl)
-      const data = response.data
-      const [fullMatch, detectedVersion] = data.match(/version: (.*?)\s/)
-      if (!detectedVersion) {
-        return resolve(false)
-      }
-
-      if (isNewVersion(currentVersion, detectedVersion)) {
-        updateStatus(
-          `🔥 New version ${detectedVersion} available! Current is ${currentVersion}.\nDownload at https://github.com/Markkop/yt-dlandcut/releases/latest/ `
-        )
-        return resolve(true)
-      }
-      return resolve(false)
-    } catch (error) {
-      updateStatus(`⚠ Update checking failed: ${error}`)
-      reject(false)
-    }
-  })
+function slugify(value) {
+  let result = String(value)
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 100)
+    .replace(/-+$/g, '')
+  if (/^(con|prn|aux|nul|com[0-9]|lpt[0-9])$/i.test(result)) result = `video-${result}`
+  return result
 }
 
-/**
- * Get the time duration betweet two dates
- * @param { String } startTime
- * @param { String } endTime
- * @returns { Number } seconds
- */
-export function getDuration(startTime, endTime) {
-  const startDate = new Date(`2020-03-04T${startTime}Z`)
-  const endDate = new Date(`2020-03-04T${endTime}Z`)
-  const seconds = (endDate.getTime() - startDate.getTime()) / 1000
-  return seconds
+function isNewVersion(current, detected) {
+  const stable = /^v?(\d+)\.(\d+)\.(\d+)$/
+  const a = stable.exec(current)?.slice(1).map(Number)
+  const b = stable.exec(detected)?.slice(1).map(Number)
+  if (!a || !b) return false
+  for (let i = 0; i < 3; i++) {
+    if (a[i] !== b[i]) return b[i] > a[i]
+  }
+  return false
 }
 
-/**
- * Opens a file or a folder
- * @param { String } path
- */
-export function openItem(path) {
-  if (typeof shell?.openItem === 'function') {
-    shell.openItem(path);
-  } else {
-    if (os.type() === 'Windows_NT') {
-      // On Windows
-      exec(`start "" "${path}"`);
-    } else if (os.type() === 'Darwin') {
-      // On MacOS
-      exec(`open "${path}"`);
-    } else {
-      // On Linux
-      exec(`xdg-open "${path}"`);
-    }
-  }
-
-  const message = `⚙️ Opening ${path}`;
-  updateStatus(message);
+async function checkUpdates(currentVersion, fetchImpl = fetch) {
+  const response = await fetchImpl(
+    'https://api.github.com/repos/Markkop/yt-dlandcut/releases/latest',
+    {
+      headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'yt-dlandcut' },
+      signal: AbortSignal.timeout(10_000),
+    },
+  )
+  if (response.status === 404) return null
+  if (!response.ok) throw new Error(`Update service returned HTTP ${response.status}.`)
+  const release = await response.json()
+  return !release.draft && !release.prerelease && isNewVersion(currentVersion, release.tag_name)
+    ? release.tag_name
+    : null
 }
 
-/**
- * Check if path exists and if doesn't,
- * then creates it.
- * @param { String } path
- */
-export function checkAndCreateFolder(path) {
-  if (!fs.existsSync(path)) {
-    updateStatus(`⚙️ Path ${path} not found, creating one`)
-    fs.mkdirSync(path, { recursive: true })
-  }
-}
-
-/**
- * Updates shown status message
- * @param { String } message
- */
-export function updateStatus(message) {
-  const today = new Date()
-  const hours = (today.getHours() < 10 ? '0' : '') + today.getHours()
-  const minutes = (today.getMinutes() < 10 ? '0' : '') + today.getMinutes()
-  const seconds = (today.getSeconds() < 10 ? '0' : '') + today.getSeconds()
-  const time = `${hours}:${minutes}:${seconds}`
-  console.log(message)
-  if (typeof document === 'undefined') {
-    return
-  }
-
-  const status = document.querySelector('#status')
-  if (!status) {
-    return
-  }
-
-  const p = document.createElement('p')
-  const text = `[${time}] ${message}`
-  p.innerText = text
-  // if (twemoji) {
-  //   twemoji.parse(p)
-  // }
-  status.appendChild(p)
-}
-
-/**
- * Replace or remove all characters that might cause problems
- * @param { String } str
- */
-export function slugify(str) {
-  const map = {
-    '-': ':| |_',
-    a: 'á|à|ã|â|À|Á|Ã|Â',
-    e: 'é|è|ê|É|È|Ê',
-    i: 'í|ì|î|Í|Ì|Î',
-    o: 'ó|ò|ô|õ|Ó|Ò|Ô|Õ',
-    u: 'ú|ù|û|ü|Ú|Ù|Û|Ü',
-    c: 'ç|Ç',
-    n: 'ñ|Ñ',
-  }
-  str = str.toLowerCase()
-  for (let pattern in map) {
-    str = str.replace(new RegExp(map[pattern], 'g'), pattern)
-  }
-  str = str.replace(/[^a-zA-Z0-9-]/g, '') // Remove non letters and numbers, except for "-"
-  str = str.replace(/-{2,}/g, '-') // If there's more than one "-" consecutive, remove them
-  str = str.replace(/^-/g, '') // Can't start with "-" or youtube-dl throws error
-  return str
+module.exports = {
+  parseTime,
+  getDuration,
+  normalizeYoutubeUrl,
+  validateRequest,
+  slugify,
+  isNewVersion,
+  checkUpdates,
+  checkAndCreateFolder: (folder) => mkdir(folder, { recursive: true }),
 }

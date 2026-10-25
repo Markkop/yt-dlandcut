@@ -1,56 +1,59 @@
-import path from 'path'
-import { getDuration, openItem, slugify, updateStatus } from './helpers'
-import { downloadFromYoutube, getVideoTitle, checkAndDownloadBinaries } from './download'
-import { cutVideo, convertToMp3 } from './convert'
-import { basePath, binariesPath } from './settings'
+const path = require('node:path')
+const { validateRequest, parseTime, slugify } = require('./helpers')
+const { ensureTools } = require('./tools')
+const { getVideoInfo, downloadFromYoutube } = require('./download')
+const { convertClip } = require('./convert')
 
-/**
- * Runs this package
- */
-export async function downloadAndCut(youtubeUrl, startTime, endTime, options) {
-  try {
-    if (!youtubeUrl || !startTime || !endTime) {
-      throw new Error('Missing obrigatory argument')
-    }
-    updateStatus('✨ Starting...')
-
-    await checkAndDownloadBinaries(binariesPath)
-
-    const { customFileName, openAtFinish, toMp3, overwriteDownload } = options
-
-    const title = await getVideoTitle(youtubeUrl)
-    const downloadFileName = slugify(title)
-    const cutFileName = slugify(customFileName || `${downloadFileName}-${startTime}-${endTime}`)
-
-    const outputPath = path.join(basePath, downloadFileName)
-    const downlodedFile = await downloadFromYoutube(
-      youtubeUrl,
-      outputPath,
-      downloadFileName,
-      overwriteDownload
+async function downloadAndCut(
+  request,
+  { basePath, binariesPath, status = () => {}, openPath, signal },
+  services = {},
+) {
+  const input = validateRequest(request)
+  const ensure = services.ensureTools || ensureTools
+  const getInfo = services.getVideoInfo || getVideoInfo
+  const download = services.downloadFromYoutube || downloadFromYoutube
+  const convert = services.convertClip || convertClip
+  status('✨ Starting…')
+  const tools = await ensure(binariesPath, status, { signal })
+  const info = await getInfo(input.youtubeUrl, tools, undefined, signal)
+  if (parseTime(input.endTime) > info.duration)
+    throw new Error(
+      `Ending time exceeds the video duration (${Math.floor(info.duration)} seconds).`,
     )
-
-    const duration = getDuration(startTime, endTime)
-    let convertedFile = await cutVideo(downlodedFile, outputPath, cutFileName, startTime, duration)
-
-    if (toMp3) {
-      convertedFile = await convertToMp3(convertedFile, outputPath, cutFileName)
-    }
-
-    if (openAtFinish) {
-      openItem(convertedFile)
-    }
-
-    updateStatus(`🎉 Finished! Check your files in your ${outputPath} folder.`)
-  } catch (error) {
-    updateStatus(`🤕 Something bad happened :c. Here's what you can try:
-    - Clean your ${binariesPath} folder and try again
-    - Delete video folder and/or check "Download again" option
-    - Check youtube url and time interval provided
-    - Lay down and cry :'(
-    - Make sure you're using the latest version
-    - Ask me for help on Twitter: @HeyMarkKop (send a print!)
-    - Check the error informed, it might have something useful`)
-    updateStatus(error)
+  const videoName = `${slugify(info.title) || 'video'}-${info.id}`
+  const fileName = slugify(
+    input.options.customFileName ||
+      `${slugify(info.title) || 'video'}-${input.startTime}-${input.endTime}`,
+  )
+  const outputPath = path.join(basePath, videoName)
+  const source = await download(
+    input.youtubeUrl,
+    outputPath,
+    input.options.overwriteDownload,
+    tools,
+    status,
+    undefined,
+    signal,
+  )
+  const output = await convert(
+    source,
+    outputPath,
+    fileName,
+    input.startTime,
+    input.duration,
+    input.options.toMp3,
+    tools,
+    status,
+    undefined,
+    signal,
+  )
+  status(`🎉 Finished! Check your files in ${outputPath}.`)
+  if (input.options.openAtFinish && openPath) {
+    const error = await openPath(output)
+    if (error) status(`⚠️ Clip saved, but could not open it: ${error}`)
   }
+  return { outputPath: output }
 }
+
+module.exports = { downloadAndCut }
