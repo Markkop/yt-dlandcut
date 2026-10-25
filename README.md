@@ -12,6 +12,34 @@ Download a YouTube video, select a time range, and save an MP4 or MP3 clip. The 
 4. Click **Submit**. The first job downloads and verifies yt-dlp, Deno, FFmpeg, and FFprobe. This needs an internet connection and may take a few minutes. Later jobs reuse the verified tools.
 5. Find clips in `~/yt-dlandcut/<video-title>-<video-id>/` or click **Open output folder**. A completed `source.mp4` is reused unless **Download again** is checked. **Cancel** stops the current job.
 
+## First launch
+
+These builds are not notarized or Authenticode-signed. Each system can warn once about the downloaded file. Allow this app only. Do not turn off Gatekeeper, SmartScreen, or other system protections.
+
+**macOS.** Copy **YouTube - Download and Cut** from the disk image into **Applications**, then eject the image. Control-click **Open** no longer bypasses the check on current macOS. Open **System Settings → Privacy & Security**, scroll to the bottom, and choose **Open Anyway** after one failed launch. If that button is missing, clear the download mark on this copy and open it:
+
+```sh
+xattr -dr com.apple.quarantine "/Applications/YouTube - Download and Cut.app"
+open "/Applications/YouTube - Download and Cut.app"
+```
+
+Use the Apple Silicon DMG (`mac-arm64`) or the Intel DMG (`mac-x64`) that matches the Mac. Repeat this only when you download a new copy.
+
+**Windows.** SmartScreen may say Windows protected your PC. Choose **More info**, then **Run anyway**. That applies to the downloaded portable `.exe` only.
+
+**Linux.** Mark the AppImage as executable, then start it. In a file manager this is **Allow executing file as a program**. From a terminal:
+
+```sh
+chmod +x yt-dlandcut-*-linux-*.AppImage
+./yt-dlandcut-*-linux-*.AppImage
+```
+
+If it reports that `libfuse.so.2` is missing, install the distribution's FUSE 2 package (`libfuse2t64` on current Ubuntu) or start that copy without mounting it:
+
+```sh
+APPIMAGE_EXTRACT_AND_RUN=1 ./yt-dlandcut-*-linux-*.AppImage
+```
+
 Normal, shortened, Shorts, live replay, embed, and mobile YouTube video links are accepted. Ongoing live streams, upcoming streams, playlists, and channels are rejected. Only download content you have permission to use.
 
 YouTube can change its extraction requirements at any time. Private, age-restricted, region-restricted, or bot-challenged videos may fail. This version does not import browser cookies or bypass account restrictions. Check the progress log and try **Download again** if a cached source is damaged.
