@@ -92,7 +92,8 @@
       "enableNodeOptionsEnvironmentVariable": false,
       "enableNodeCliInspectArguments": false,
       "enableEmbeddedAsarIntegrityValidation": true,
-      "onlyLoadAppFromAsar": true
+      "onlyLoadAppFromAsar": true,
+      "resetAdHocDarwinSignature": true
     }
   },
   "desktopName": "com.electron.yt-dlandcut.desktop"

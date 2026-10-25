@@ -80,7 +80,7 @@ npm run release
 
 That command requires `GH_TOKEN` in the environment and uploads to a draft release. Do not put tokens in files committed to this repository. Ordinary `pack` and `build` commands always pass `--publish never`.
 
-For a public macOS release, configure Developer ID signing and notarization using [electron-builder v26's signing documentation](https://www.electron.build/v26/docs/features/code-signing/). Windows signing should also be configured for public distribution. The current workflow has no signing credentials configured; generated artifacts must be treated as release candidates until signing and clean-machine checks are complete. Do not encourage users to disable OS security controls.
+For a public macOS release, configure Developer ID signing and notarization using [electron-builder v26's signing documentation](https://www.electron.build/v26/docs/features/code-signing/). Windows signing should also be configured for public distribution. The current workflow has no signing credentials configured. macOS builds instead restore an ad-hoc signature after Electron's fuses are flipped; without that, Gatekeeper reports the downloaded app as damaged. Generated artifacts must be treated as release candidates until signing and clean-machine checks are complete. Do not encourage users to disable OS security controls.
 
 ## License
 
