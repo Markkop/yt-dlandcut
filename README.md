@@ -1,13 +1,17 @@
-# <img alt="App icon" src="public/256x256.png" width="26"> YouTube - Download and Cut v4
+# <img alt="App icon" src="public/256x256.png" width="26"> YouTube - Download and Cut
 
-Download a YouTube video, select a time range, and save an MP4 or MP3 clip. The original desktop interface and output folder are preserved.
+Download a YouTube video, select a time range, and save an MP4 or MP3 clip.
 
 ![GitHub release](https://img.shields.io/github/v/release/Markkop/yt-dlandcut)
+
+<kbd>
+  <img border="1" alt="Demo" src="https://i.imgur.com/hx48SzZ.gif">
+</kbd>
 
 ## Usage
 
 1. Download the appropriate Linux **AppImage**, Windows **portable EXE**, or macOS **DMG** from [Releases](https://github.com/Markkop/yt-dlandcut/releases).
-2. Enter a video URL and starting/ending times in **HH:MM:SS** format. The ending time must be later and within the video duration.
+2. Enter a video URL and starting/ending times in **HH:MM:SS** format.
 3. Optionally select **Convert to MP3**, **Download again**, **Open file on finish**, or enter a custom filename.
 4. Click **Submit**. The first job downloads and verifies yt-dlp, Deno, FFmpeg, and FFprobe. This needs an internet connection and may take a few minutes. Later jobs reuse the verified tools.
 5. Find clips in `~/yt-dlandcut/<video-title>-<video-id>/` or click **Open output folder**. A completed `source.mp4` is reused unless **Download again** is checked. **Cancel** stops the current job.
@@ -42,9 +46,9 @@ APPIMAGE_EXTRACT_AND_RUN=1 ./yt-dlandcut-*-linux-*.AppImage
 
 Normal, shortened, Shorts, live replay, embed, and mobile YouTube video links are accepted. Ongoing live streams, upcoming streams, playlists, and channels are rejected. Only download content you have permission to use.
 
-YouTube can change its extraction requirements at any time. Private, age-restricted, region-restricted, or bot-challenged videos may fail. This version does not import browser cookies or bypass account restrictions. Check the progress log and try **Download again** if a cached source is damaged.
+YouTube can change its extraction requirements at any time. Private, age-restricted, region-restricted, or bot-challenged videos may fail. The app does not import browser cookies or bypass account restrictions. Check the progress log and try **Download again** if a cached source is damaged.
 
-The tool cache lives in Electron's per-user application-data directory, separate from your downloaded videos. v2 and v3.0.0 downloads are left in place; v4 uses video IDs in folder names to prevent different videos with the same title sharing a cached download. MP3 export creates an audio clip directly rather than an intermediate cut video.
+The tool cache lives in Electron's per-user application-data directory, separate from your downloaded videos. Output folders include the video ID so two videos with the same title do not share a download. MP3 export creates an audio clip directly.
 
 ## Development
 
